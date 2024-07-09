@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Time and Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        .welcome {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .time {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .image {
+            width: 50%;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="welcome">Welcome to Mosque Aisha Niagara Falls</div>
+<div class="time" id="currentTime"></div>
+<img src="Screenshot 2024-07-01 at 11.39.33 AM.png" alt="Mosque Aisha" class="image">
+
+<script>
+    function updateTime() {
+        const currentTime = new Date();
+        document.getElementById('currentTime').innerText = currentTime.toLocaleTimeString();
+    }
+    setInterval(updateTime, 1000);
+    updateTime(); // initial call to display time immediately
+</script>
+
+</body>
+</html>
