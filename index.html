@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Display Time, Date, and Logo</title>
+    <title>Display Time, Date, and Rotating Images</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,7 +13,7 @@
             justify-content: center;
             height: 100vh;
             background-color: #001f3f; /* Dark Blue */
-            color: white; /* Ensuring text is visible */
+            color: white;
             text-align: center;
             margin: 0;
         }
@@ -31,8 +31,8 @@
             margin-bottom: 20px;
         }
         .image {
-            width: 85%; /* Reduced size from 90% to 80% */
-            max-width: 1600px; /* Adjusted max width for better fit */
+            width: 85%;
+            max-width: 1600px;
             border: 1px solid #ccc;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -49,7 +49,7 @@
 <div class="welcome">Welcome to Mosque Aisha Niagara Falls</div>
 <div class="date" id="currentDate"></div>
 <div class="time" id="currentTime"></div>
-<img src="https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp Image 2025-02-19 at 14.45.05.jpeg" alt="Mosque Aisha Display" class="image">
+<img id="rotatingImage" src="" alt="Mosque Aisha Display" class="image">
 <div class="contact">Contact@mosqueaisha.ca | (905) 347-2633</div>
 
 <script>
@@ -59,9 +59,24 @@
         document.getElementById('currentTime').innerText = currentDate.toLocaleTimeString();
     }
     setInterval(updateTimeAndDate, 1000);
-    updateTimeAndDate(); // Initial call to display time and date immediately
+    updateTimeAndDate();
+
+    // Image Rotation
+    const images = [
+        "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp Image 2025-02-19 at 14.45.05.jpeg",
+        "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/Thorold Taraweh (1).png"
+    ];
+    let currentImageIndex = 0;
+    const rotatingImageElement = document.getElementById("rotatingImage");
+    
+    function rotateImages() {
+        rotatingImageElement.src = images[currentImageIndex];
+        currentImageIndex = (currentImageIndex + 1) % images.length;
+    }
+    
+    setInterval(rotateImages, 5000);
+    rotateImages(); // Initial call
 </script>
 
 </body>
 </html>
-
