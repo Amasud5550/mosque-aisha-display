@@ -127,53 +127,40 @@
   setInterval(updateTimeAndDate, 1000);
   updateTimeAndDate();
 
-  // 🌅 Fetch Sunset Automatically for Niagara Falls, ON
-  async function fetchSunsetTime() {
+  // 🕋 Load all prayer times from your JSON in GitHub
+  async function loadPrayerTimesFromJSON() {
+    try {
+      const response = await fetch("https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/prayerTimes.json");
+      const data = await response.json();
+
+      document.getElementById("fajrTime").innerText = data.fajr;
+      document.getElementById("dhuhrTime").innerText = data.dhuhr;
+      document.getElementById("asrTime").innerText = data.asr;
+      document.getElementById("ishaTime").innerText = data.isha;
+
+      // We'll update Maghrib automatically next
+      fetchMaghribTime();
+
+    } catch (err) {
+      console.error("Error loading prayer times:", err);
+    }
+  }
+
+  // 🌇 Automatically fetch Maghrib (Sunset) for Niagara Falls, ON
+  async function fetchMaghribTime() {
     try {
       const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Niagara%20Falls&country=Canada&method=2");
       const data = await response.json();
       const sunset = data.data.timings.Maghrib;
       document.getElementById("maghribTime").innerText = sunset;
-      savePrayerTime("maghrib", sunset);
     } catch (err) {
-      console.error("Error fetching sunset:", err);
+      console.error("Error fetching Maghrib time:", err);
     }
   }
 
-  // 🕋 LocalStorage for prayer times
-  const prayerKeys = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
-
-  function loadPrayerTimes() {
-    prayerKeys.forEach((key) => {
-      const value = localStorage.getItem(key);
-      if (value) document.getElementById(key + "Time").innerText = value;
-    });
-  }
-
-  function savePrayerTime(name, value) {
-    localStorage.setItem(name, value);
-  }
-
-  // 🛠 Admin Portal
-  function toggleAdminPortal() {
-    const portal = document.getElementById("adminPortal");
-    portal.style.display = portal.style.display === "flex" ? "none" : "flex";
-  }
-
-  function updatePrayerTimes() {
-    prayerKeys.forEach((key) => {
-      const input = document.getElementById(key + "Input");
-      if (input && input.value) {
-        savePrayerTime(key, input.value);
-        document.getElementById(key + "Time").innerText = input.value;
-      }
-    });
-    alert("Prayer times updated and saved locally.");
-  }
-
-  // 🖼 Image Rotation
+  // 🖼 Image rotation
   const images = [
-    "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp Image 2025-04-20 at 20.45.41.jpeg"
+    "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp%20Image%202025-04-20%20at%2020.45.41.jpeg"
   ];
   let currentImageIndex = 0;
   const rotatingImageElement = document.getElementById("rotatingImage");
@@ -186,9 +173,9 @@
   rotateImages();
 
   // 🚀 Initialize
-  loadPrayerTimes();
-  fetchSunsetTime();
+  loadPrayerTimesFromJSON();
 </script>
+
 
 </body>
 </html>
