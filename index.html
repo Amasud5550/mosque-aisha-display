@@ -113,74 +113,82 @@
     <input id="asrInput" placeholder="Asr (e.g. 03:28 PM)" />
     <input id="maghribInput" placeholder="Maghrib (e.g. 05:05 PM)" />
     <input id="ishaInput" placeholder="Isha (e.g. 06:25 PM)" />
-    <button onclick="downloadJSON()">Download JSON</button>
+    <button onclick="updatePrayerTimes()">Save Prayer Times</button>
+
   </div>
 
   <script>
-    // ⏰ Time + Date
-    function updateTimeAndDate() {
-      const now = new Date();
-      document.getElementById('currentDate').innerText = now.toDateString();
-      document.getElementById('currentTime').innerText = now.toLocaleTimeString();
-    }
-    setInterval(updateTimeAndDate, 1000);
-    updateTimeAndDate();
+  // 📅 Date and Time
+  function updateTimeAndDate() {
+    const now = new Date();
+    document.getElementById("currentDate").innerText = now.toDateString();
+    document.getElementById("currentTime").innerText = now.toLocaleTimeString();
+  }
+  setInterval(updateTimeAndDate, 1000);
+  updateTimeAndDate();
 
-    // 🖼 Image Rotation
-    const images = [
-      "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp Image 2025-04-20 at 20.45.41.jpeg",
-     <!-- "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/image2.jpeg",-->
-     <!--"https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/image3.jpeg" -->
-    ];
-    let currentImageIndex = 0;
-    const rotatingImageElement = document.getElementById("rotatingImage");
-    function rotateImages() {
-      rotatingImageElement.src = images[currentImageIndex];
-      currentImageIndex = (currentImageIndex + 1) % images.length;
+  // 🌅 Fetch Sunset Automatically for Niagara Falls, ON
+  async function fetchSunsetTime() {
+    try {
+      const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Niagara%20Falls&country=Canada&method=2");
+      const data = await response.json();
+      const sunset = data.data.timings.Maghrib;
+      document.getElementById("maghribTime").innerText = sunset;
+      savePrayerTime("maghrib", sunset);
+    } catch (err) {
+      console.error("Error fetching sunset:", err);
     }
-    setInterval(rotateImages, 15000);
-    rotateImages();
+  }
 
-    // 📖 Load prayer times from GitHub JSON
-    async function loadPrayerTimes() {
-      try {
-        const response = await fetch("https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/prayertimes.json");
-        const data = await response.json();
-        document.getElementById("fajrTime").innerText = data.fajr;
-        document.getElementById("dhuhrTime").innerText = data.dhuhr;
-        document.getElementById("asrTime").innerText = data.asr;
-        document.getElementById("maghribTime").innerText = data.maghrib;
-        document.getElementById("ishaTime").innerText = data.isha;
-      } catch (err) {
-        console.error("Error loading prayer times:", err);
+  // 🕋 LocalStorage for prayer times
+  const prayerKeys = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
+
+  function loadPrayerTimes() {
+    prayerKeys.forEach((key) => {
+      const value = localStorage.getItem(key);
+      if (value) document.getElementById(key + "Time").innerText = value;
+    });
+  }
+
+  function savePrayerTime(name, value) {
+    localStorage.setItem(name, value);
+  }
+
+  // 🛠 Admin Portal
+  function toggleAdminPortal() {
+    const portal = document.getElementById("adminPortal");
+    portal.style.display = portal.style.display === "flex" ? "none" : "flex";
+  }
+
+  function updatePrayerTimes() {
+    prayerKeys.forEach((key) => {
+      const input = document.getElementById(key + "Input");
+      if (input && input.value) {
+        savePrayerTime(key, input.value);
+        document.getElementById(key + "Time").innerText = input.value;
       }
-    }
-    loadPrayerTimes();
+    });
+    alert("Prayer times updated and saved locally.");
+  }
 
-    // 🛠 Admin Portal
-    function toggleAdminPortal() {
-      const portal = document.getElementById("adminPortal");
-      portal.style.display = portal.style.display === "flex" ? "none" : "flex";
-    }
+  // 🖼 Image Rotation
+  const images = [
+    "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp Image 2025-04-20 at 20.45.41.jpeg"
+  ];
+  let currentImageIndex = 0;
+  const rotatingImageElement = document.getElementById("rotatingImage");
 
-    function downloadJSON() {
-      const data = {
-        date: new Date().toISOString().split("T")[0],
-        fajr: document.getElementById("fajrInput").value,
-        dhuhr: document.getElementById("dhuhrInput").value,
-        asr: document.getElementById("asrInput").value,
-        maghrib: document.getElementById("maghribInput").value,
-        isha: document.getElementById("ishaInput").value
-      };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "prayertimes.json";
-      a.click();
-      URL.revokeObjectURL(url);
-      alert("JSON file downloaded — upload it to your GitHub repo to update prayer times.");
-    }
-  </script>
+  function rotateImages() {
+    rotatingImageElement.src = images[currentImageIndex];
+    currentImageIndex = (currentImageIndex + 1) % images.length;
+  }
+  setInterval(rotateImages, 15000);
+  rotateImages();
+
+  // 🚀 Initialize
+  loadPrayerTimes();
+  fetchSunsetTime();
+</script>
+
 </body>
 </html>
