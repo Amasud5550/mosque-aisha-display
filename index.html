@@ -118,7 +118,7 @@
   </div>
 
   <script>
-  // 📅 Date and Time
+  //  Date and Time
   function updateTimeAndDate() {
     const now = new Date();
     document.getElementById("currentDate").innerText = now.toDateString();
@@ -127,7 +127,7 @@
   setInterval(updateTimeAndDate, 1000);
   updateTimeAndDate();
 
-  // 🕋 Load all prayer times from your JSON in GitHub
+  //  Load all prayer times from your JSON in GitHub
   async function loadPrayerTimesFromJSON() {
     try {
       const response = await fetch("https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/prayerTimes.json");
@@ -146,7 +146,7 @@
     }
   }
 
-  // 🌇 Automatically fetch Maghrib (Sunset) for Niagara Falls, ON
+  //  Automatically fetch Maghrib (Sunset) for Niagara Falls, ON
   async function fetchMaghribTime() {
     try {
       const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Niagara%20Falls&country=Canada&method=2");
@@ -172,7 +172,7 @@
   setInterval(rotateImages, 15000);
   rotateImages();
 
-  // 🚀 Initialize
+  //  Initialize
   loadPrayerTimesFromJSON();
 </script>
 
