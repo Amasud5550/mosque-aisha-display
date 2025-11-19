@@ -6,94 +6,120 @@
   <title>Mosque Aisha Display</title>
 
   <style>
+    :root {
+      --font-large: 46px;
+      --font-medium: 30px;
+      --font-small: 22px;
+    }
+
     body {
       font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       height: 100vh;
+      width: 100vw;
       background-color: #001f3f;
       color: white;
       text-align: center;
       margin: 0;
+      overflow: hidden;
     }
+
     .logo {
       margin-top: 20px;
-      width: 200px;
+      width: 240px;
     }
+
     .welcome {
-      font-size: 40px;
+      font-size: var(--font-large);
       font-weight: bold;
-      margin: 15px 0;
+      margin: 10px 0 5px 0;
     }
+
     .date, .time {
-      font-size: 28px;
-      margin-bottom: 10px;
+      font-size: var(--font-medium);
+      margin-bottom: 5px;
     }
-    .image {
-      width: 50%;
-      max-width: 1600px;
-      border: 1px solid #ccc;
-      margin: 10px 0;
-    }
+
     .prayer-times {
-      background-color: rgba(255,255,255,0.1);
-      padding: 15px 25px;
-      border-radius: 10px;
-      margin: 10px 0;
+      width: 85%;
+      background-color: rgba(255,255,255,0.10);
+      padding: 20px;
+      border-radius: 14px;
+      margin-top: 10px;
     }
+
     .prayer-times table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 22px;
+      font-size: var(--font-small);
     }
+
     .prayer-times td {
-      padding: 5px 15px;
+      padding: 8px 10px;
     }
+
+    .image {
+      margin-top: 20px;
+      width: 90%;
+      border-radius: 10px;
+      max-height: 40vh;
+      object-fit: contain;
+    }
+
     .contact {
-      font-size: 20px;
+      font-size: var(--font-small);
       font-weight: bold;
       margin: 15px 0;
     }
 
-    /* Admin Portal */
+    /* ADMIN PORTAL */
     #adminPortal {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
       display: none;
       flex-direction: column;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
       padding: 20px;
       border-radius: 12px;
-      margin-top: 20px;
+      width: 260px;
     }
+
     #adminPortal input {
       margin: 5px 0;
       padding: 6px;
-      border: none;
       border-radius: 6px;
+      border: none;
       text-align: center;
+      font-size: 16px;
     }
+
     #adminPortal button {
       margin-top: 10px;
       padding: 8px;
+      border-radius: 6px;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background-color: #0074d9;
-      color: white;
       font-size: 16px;
+      background: #0074d9;
+      color: white;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
-  <img src="https://mosqueaisha.ca/assets/logo-clear.png" alt="Mosque Aisha Logo" class="logo">
-  <div class="welcome">Welcome to Mosque Aisha Niagara Falls</div>
-  <div class="date" id="currentDate"></div>
-  <div class="time" id="currentTime"></div>
+
+  <img src="https://mosqueaisha.ca/assets/logo-clear.png" class="logo">
+
+  <div class="welcome">Mosque Aisha – Niagara Falls</div>
+  <div id="currentDate" class="date"></div>
+  <div id="currentTime" class="time"></div>
 
   <div class="prayer-times">
-    <h2>Today's Prayer Times</h2>
+    <h2 style="margin-top: 0;">Today's Prayer Times</h2>
     <table>
       <tr><td>Fajr</td><td id="fajrTime">--:--</td></tr>
       <tr><td>Dhuhr</td><td id="dhuhrTime">--:--</td></tr>
@@ -103,24 +129,22 @@
     </table>
   </div>
 
-  <img id="rotatingImage" src="" class="image">
+  <img id="rotatingImage" class="image">
 
-  <div class="contact">Contact@mosqueaisha.ca | (905) 347-2633</div>
+  <div class="contact">contact@mosqueaisha.ca • (905) 347-2633</div>
 
-  <!-- Admin Portal -->
+  <!-- ADMIN -->
   <div id="adminPortal">
-    <input id="fajrInput" placeholder="Fajr (e.g. 05:56 AM)">
-    <input id="dhuhrInput" placeholder="Dhuhr (e.g. 12:13 PM)">
-    <input id="asrInput" placeholder="Asr (e.g. 03:28 PM)">
-    <input id="maghribInput" placeholder="Maghrib (e.g. 05:05 PM)">
-    <input id="ishaInput" placeholder="Isha (e.g. 06:25 PM)">
-    <button id="updateTimesBtn">Update Prayer Times (Local Only)</button>
+    <input id="fajrInput" placeholder="Fajr">
+    <input id="dhuhrInput" placeholder="Dhuhr">
+    <input id="asrInput" placeholder="Asr">
+    <input id="maghribInput" placeholder="Maghrib">
+    <input id="ishaInput" placeholder="Isha">
+    <button id="updateTimesBtn">Update</button>
   </div>
 
 <script>
-// ----------------------------
-// Live Date & Time
-// ----------------------------
+/* ------------------------ DATE & TIME ------------------------ */
 function updateTimeAndDate() {
   const now = new Date();
   document.getElementById("currentDate").innerText = now.toDateString();
@@ -129,9 +153,7 @@ function updateTimeAndDate() {
 setInterval(updateTimeAndDate, 1000);
 updateTimeAndDate();
 
-// ----------------------------
-// Load JSON (with Maghrib fallback)
-// ----------------------------
+/* --------------------- LOAD LOCAL JSON ---------------------- */
 let fallbackMaghrib = "--:--";
 
 async function loadPrayerTimesFromJSON() {
@@ -144,77 +166,58 @@ async function loadPrayerTimesFromJSON() {
     document.getElementById("asrTime").innerText = data.asr;
     document.getElementById("ishaTime").innerText = data.isha;
 
-    // save fallback maghrib
-    fallbackMaghrib = data.maghrib ? data.maghrib : "--:--";
+    fallbackMaghrib = data.maghrib || fallbackMaghrib;
 
     fetchMaghribTime();
-  } catch (err) {
-    console.error("JSON failed → using fallback only");
+  } catch {
     document.getElementById("maghribTime").innerText = fallbackMaghrib;
   }
 }
 
-// ----------------------------
-// Maghrib API with fallback
-// ----------------------------
+/* --------------------- MAGHRIB API + FALLBACK --------------------- */
 async function fetchMaghribTime() {
   try {
     const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Niagara%20Falls&country=Canada&method=2");
     const data = await response.json();
     document.getElementById("maghribTime").innerText = data.data.timings.Maghrib;
-  } catch (err) {
-    console.error("Maghrib API failed → using fallback");
+  } catch {
     document.getElementById("maghribTime").innerText = fallbackMaghrib;
   }
 }
 
-// ----------------------------
-// Image Rotation
-// ----------------------------
+/* --------------------- IMAGE ROTATION --------------------- */
 const images = [
   "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp%20Image%202025-04-20%20at%2020.45.41.jpeg"
 ];
 
-let currentImageIndex = 0;
-const rotatingImageElement = document.getElementById("rotatingImage");
+let imgIndex = 0;
+const rotImg = document.getElementById("rotatingImage");
 
 function rotateImages() {
-  rotatingImageElement.src = images[currentImageIndex];
-  currentImageIndex = (currentImageIndex + 1) % images.length;
+  rotImg.src = images[imgIndex];
+  imgIndex = (imgIndex + 1) % images.length;
 }
+rotateImages();
+if (images.length > 1) setInterval(rotateImages, 15000);
 
-if (images.length > 1) {
-  setInterval(rotateImages, 15000);
-}
-rotateImages(); // load first image
-
-// ----------------------------
-// Admin Update Local Times
-// ----------------------------
-document.getElementById("updateTimesBtn").onclick = function () {
-  document.getElementById("fajrTime").innerText = document.getElementById("fajrInput").value || "--:--";
-  document.getElementById("dhuhrTime").innerText = document.getElementById("dhuhrInput").value || "--:--";
-  document.getElementById("asrTime").innerText = document.getElementById("asrInput").value || "--:--";
-  document.getElementById("maghribTime").innerText = document.getElementById("maghribInput").value || "--:--";
-  document.getElementById("ishaTime").innerText = document.getElementById("ishaInput").value || "--:--";
+/* --------------------- ADMIN PANEL --------------------- */
+document.getElementById("updateTimesBtn").onclick = () => {
+  document.getElementById("fajrTime").innerText = fajrInput.value || "--:--";
+  document.getElementById("dhuhrTime").innerText = dhuhrInput.value || "--:--";
+  document.getElementById("asrTime").innerText = asrInput.value || "--:--";
+  document.getElementById("maghribTime").innerText = maghribInput.value || "--:--";
+  document.getElementById("ishaTime").innerText = ishaInput.value || "--:--";
 };
 
-// ----------------------------
-// Toggle Admin Panel (Ctrl+Shift+A)
-// ----------------------------
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-    const adminPortal = document.getElementById("adminPortal");
-    adminPortal.style.display = adminPortal.style.display === "flex" ? "none" : "flex";
+    const admin = document.getElementById("adminPortal");
+    admin.style.display = admin.style.display === "flex" ? "none" : "flex";
   }
 });
 
-// ----------------------------
-// Auto Refresh Every 1 Hour
-// ----------------------------
-setInterval(() => {
-  window.location.reload();
-}, 3600000);
+/* --------------------- AUTO REFRESH (1 HOUR) --------------------- */
+setInterval(() => location.reload(), 3600000);
 
 loadPrayerTimesFromJSON();
 </script>
