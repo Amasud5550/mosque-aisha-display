@@ -56,6 +56,7 @@
       font-weight: bold;
       margin: 15px 0;
     }
+
     /* Admin Portal */
     #adminPortal {
       display: none;
@@ -84,6 +85,7 @@
     }
   </style>
 </head>
+
 <body>
   <img src="https://mosqueaisha.ca/assets/logo-clear.png" alt="Mosque Aisha Logo" class="logo">
   <div class="welcome">Welcome to Mosque Aisha Niagara Falls</div>
@@ -105,82 +107,91 @@
 
   <div class="contact">Contact@mosqueaisha.ca | (905) 347-2633</div>
 
-  <!-- Admin input portal -->
-
+  <!-- Admin Portal -->
   <div id="adminPortal">
     <input id="fajrInput" placeholder="Fajr (e.g. 05:56 AM)" />
     <input id="dhuhrInput" placeholder="Dhuhr (e.g. 12:13 PM)" />
     <input id="asrInput" placeholder="Asr (e.g. 03:28 PM)" />
     <input id="maghribInput" placeholder="Maghrib (e.g. 05:05 PM)" />
     <input id="ishaInput" placeholder="Isha (e.g. 06:25 PM)" />
-    
-
+    <button id="updateTimesBtn">Update Prayer Times (Local Only)</button>
   </div>
 
-  <script>
-  //  Date and Time
-  function updateTimeAndDate() {
-    const now = new Date();
-    document.getElementById("currentDate").innerText = now.toDateString();
-    document.getElementById("currentTime").innerText = now.toLocaleTimeString();
-  }
-  setInterval(updateTimeAndDate, 1000);
-  updateTimeAndDate();
-
-  //  Load all prayer times from your JSON in GitHub
-  async function loadPrayerTimesFromJSON() {
-    try {
-      const response = await fetch("https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/prayerTimes.json");
-      const data = await response.json();
-
-      document.getElementById("fajrTime").innerText = data.fajr;
-      document.getElementById("dhuhrTime").innerText = data.dhuhr;
-      document.getElementById("asrTime").innerText = data.asr;
-      document.getElementById("ishaTime").innerText = data.isha;
-
-      // We'll update Maghrib automatically next
-      fetchMaghribTime();
-
-    } catch (err) {
-      console.error("Error loading prayer times:", err);
-    }
-  }
-
-  //  Automatically fetch Maghrib (Sunset) for Niagara Falls, ON
-  async function fetchMaghribTime() {
-    try {
-      const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Niagara%20Falls&country=Canada&method=2");
-      const data = await response.json();
-      const sunset = data.data.timings.Maghrib;
-      document.getElementById("maghribTime").innerText = sunset;
-    } catch (err) {
-      console.error("Error fetching Maghrib time:", err);
-    }
-  }
-
-  // Image rotation for the images from git repo
-  const images = [
-    "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp%20Image%202025-04-20%20at%2020.45.41.jpeg"
-  ];
-  let currentImageIndex = 0;
-  const rotatingImageElement = document.getElementById("rotatingImage");
-
-  function rotateImages() {
-    rotatingImageElement.src = images[currentImageIndex];
-    currentImageIndex = (currentImageIndex + 1) % images.length;
-  }
-  setInterval(rotateImages, 15000);
-  rotateImages();
-
-  //  Initialize for the prayer time from json
-  loadPrayerTimesFromJSON();
-</script>
-
 <script>
-  // Refresh page every 1 hour (3600000 ms)
-  setInterval(() => {
-    window.location.reload(true);
-  }, 3600000);
+// Date + Time
+function updateTimeAndDate() {
+  const now = new Date();
+  document.getElementById("currentDate").innerText = now.toDateString();
+  document.getElementById("currentTime").innerText = now.toLocaleTimeString();
+}
+setInterval(updateTimeAndDate, 1000);
+updateTimeAndDate();
+
+// Load JSON prayer times
+async function loadPrayerTimesFromJSON() {
+  try {
+    const response = await fetch("https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/prayerTimes.json");
+    const data = await response.json();
+
+    document.getElementById("fajrTime").innerText = data.fajr;
+    document.getElementById("dhuhrTime").innerText = data.dhuhr;
+    document.getElementById("asrTime").innerText = data.asr;
+    document.getElementById("ishaTime").innerText = data.isha;
+
+    fetchMaghribTime();
+  } catch (err) {
+    console.error("Error loading prayer times:", err);
+  }
+}
+
+// Fetch Maghrib (sunset)
+async function fetchMaghribTime() {
+  try {
+    const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Niagara%20Falls&country=Canada&method=2");
+    const data = await response.json();
+    document.getElementById("maghribTime").innerText = data.data.timings.Maghrib;
+  } catch (err) {
+    console.error("Error fetching Maghrib time:", err);
+  }
+}
+
+// Rotate images
+const images = [
+  "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp%20Image%202025-04-20%20at%2020.45.41.jpeg"
+];
+let currentImageIndex = 0;
+const rotatingImageElement = document.getElementById("rotatingImage");
+
+function rotateImages() {
+  rotatingImageElement.src = images[currentImageIndex];
+  currentImageIndex = (currentImageIndex + 1) % images.length;
+}
+setInterval(rotateImages, 15000);
+rotateImages();
+
+// Admin update local values
+document.getElementById("updateTimesBtn").onclick = function () {
+  document.getElementById("fajrTime").innerText = document.getElementById("fajrInput").value || "--:--";
+  document.getElementById("dhuhrTime").innerText = document.getElementById("dhuhrInput").value || "--:--";
+  document.getElementById("asrTime").innerText = document.getElementById("asrInput").value || "--:--";
+  document.getElementById("maghribTime").innerText = document.getElementById("maghribInput").value || "--:--";
+  document.getElementById("ishaTime").innerText = document.getElementById("ishaInput").value || "--:--";
+};
+
+// Toggle admin portal: Ctrl + Shift + A
+document.addEventListener("keydown", function (e) {
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+    const adminPortal = document.getElementById("adminPortal");
+    adminPortal.style.display = adminPortal.style.display === "flex" ? "none" : "flex";
+  }
+});
+
+// Auto refresh every 1 hour
+setInterval(() => {
+  window.location.reload();
+}, 3600000);
+
+loadPrayerTimesFromJSON();
 </script>
 
 </body>
