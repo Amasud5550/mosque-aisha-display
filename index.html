@@ -234,7 +234,6 @@
       padding-top: 6px;
     }
 
-    /* Admin */
     #adminPortal {
       position: fixed;
       right: 24px;
@@ -322,8 +321,8 @@
         <tr data-prayer="asr"><td>Asr</td><td id="asrTime">--:--</td></tr>
         <tr data-prayer="maghrib"><td>Maghrib</td><td id="maghribTime">--:--</td></tr>
         <tr data-prayer="isha"><td>Isha</td><td id="ishaTime">--:--</td></tr>
-        <tr><td>Jumah 1</td><td id="jumah1Time">--:--</td></tr>
-        <tr><td>Jumah 2</td><td id="jumah2Time">--:--</td></tr>
+        <tr data-prayer="jumah1"><td>Jumah 1</td><td id="jumah1Time">--:--</td></tr>
+        <tr data-prayer="jumah2"><td>Jumah 2</td><td id="jumah2Time">--:--</td></tr>
       </table>
     </div>
 
@@ -359,15 +358,6 @@
     const images = [
       "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/CommunityIftar26.jpeg"
     ];
-
-    const prayerOrder = ["fajr", "dhuhr", "asr", "maghrib", "isha"];
-    const prayerLabels = {
-      fajr: "Fajr",
-      dhuhr: "Dhuhr",
-      asr: "Asr",
-      maghrib: "Maghrib",
-      isha: "Isha"
-    };
 
     const state = {
       prayers: {
@@ -428,7 +418,7 @@
     function parseTimeToday(timeStr) {
       if (!timeStr || timeStr === "--:--") return null;
 
-      const cleaned = timeStr.trim();
+      const cleaned = String(timeStr).trim();
       const match12 = cleaned.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
       const match24 = cleaned.match(/^(\d{1,2}):(\d{2})$/);
 
@@ -437,7 +427,8 @@
         now.toLocaleString("en-US", { timeZone: TIMEZONE })
       );
 
-      let hours, minutes;
+      let hours;
+      let minutes;
 
       if (match12) {
         hours = parseInt(match12[1], 10);
@@ -469,6 +460,7 @@
       if (hours > 0) {
         return `${hours}h ${minutes}m ${seconds}s remaining`;
       }
+
       return `${minutes}m ${seconds}s remaining`;
     }
 
@@ -485,15 +477,33 @@
         new Date().toLocaleString("en-US", { timeZone: TIMEZONE })
       );
 
+      const isFriday = now.getDay() === 5;
+
+      const schedule = isFriday
+        ? [
+            { key: "fajr", label: "Fajr", time: state.prayers.fajr },
+            { key: "jumah1", label: "Jumah 1", time: state.prayers.jumah1 },
+            { key: "jumah2", label: "Jumah 2", time: state.prayers.jumah2 },
+            { key: "asr", label: "Asr", time: state.prayers.asr },
+            { key: "maghrib", label: "Maghrib", time: state.prayers.maghrib },
+            { key: "isha", label: "Isha", time: state.prayers.isha }
+          ]
+        : [
+            { key: "fajr", label: "Fajr", time: state.prayers.fajr },
+            { key: "dhuhr", label: "Dhuhr", time: state.prayers.dhuhr },
+            { key: "asr", label: "Asr", time: state.prayers.asr },
+            { key: "maghrib", label: "Maghrib", time: state.prayers.maghrib },
+            { key: "isha", label: "Isha", time: state.prayers.isha }
+          ];
+
       let nextPrayer = null;
 
-      for (const prayer of prayerOrder) {
-        const prayerDate = parseTimeToday(state.prayers[prayer]);
+      for (const prayer of schedule) {
+        const prayerDate = parseTimeToday(prayer.time);
+
         if (prayerDate && prayerDate > now) {
           nextPrayer = {
-            key: prayer,
-            label: prayerLabels[prayer],
-            time: state.prayers[prayer],
+            ...prayer,
             date: prayerDate
           };
           break;
@@ -502,8 +512,10 @@
 
       if (!nextPrayer) {
         const tomorrowFajr = parseTimeToday(state.prayers.fajr);
+
         if (tomorrowFajr) {
           tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
+
           nextPrayer = {
             key: "fajr",
             label: "Fajr",
@@ -523,7 +535,7 @@
       const diff = nextPrayer.date - now;
 
       setText("nextPrayerName", nextPrayer.label);
-      setText("nextPrayerMeta", `${nextPrayer.time}`);
+      setText("nextPrayerMeta", nextPrayer.time);
       setText("countdown", formatCountdown(diff));
 
       const activeRow = document.querySelector(`tr[data-prayer="${nextPrayer.key}"]`);
@@ -564,11 +576,7 @@
         const data = await response.json();
         const apiMaghrib = data?.data?.timings?.Maghrib;
 
-        if (apiMaghrib) {
-          state.prayers.maghrib = apiMaghrib;
-        } else {
-          state.prayers.maghrib = state.fallbackMaghrib;
-        }
+        state.prayers.maghrib = apiMaghrib || state.fallbackMaghrib;
 
         renderPrayerTimes();
         updateNextPrayer();
