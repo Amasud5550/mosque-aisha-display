@@ -9,11 +9,9 @@
     :root {
       --bg: #031a33;
       --panel: rgba(255, 255, 255, 0.08);
-      --panel-strong: rgba(255, 255, 255, 0.12);
       --text: #ffffff;
       --muted: #d7e4f2;
       --accent: #ffd166;
-      --accent-dark: #c89b23;
       --line: rgba(255, 255, 255, 0.12);
       --green: #7ef29a;
 
@@ -197,7 +195,6 @@
 
     tr.active {
       background: rgba(255, 209, 102, 0.12);
-      border-radius: 12px;
     }
 
     tr.active td:first-child,
@@ -232,50 +229,6 @@
       font-weight: 700;
       color: var(--text);
       padding-top: 6px;
-    }
-
-    #adminPortal {
-      position: fixed;
-      right: 24px;
-      bottom: 24px;
-      width: 320px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-      padding: 18px;
-      border-radius: 16px;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 999;
-    }
-
-    #adminPortal.show {
-      display: flex;
-    }
-
-    #adminPortal h3 {
-      margin: 0 0 8px 0;
-      font-size: 20px;
-      text-align: center;
-    }
-
-    #adminPortal input {
-      padding: 10px 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 15px;
-      text-align: center;
-    }
-
-    #adminPortal button {
-      margin-top: 6px;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      font-weight: 700;
-      color: white;
-      background: #0074d9;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -317,12 +270,12 @@
       <h2 class="tableTitle">Today's Prayer Times</h2>
       <table>
         <tr data-prayer="fajr"><td>Fajr</td><td id="fajrTime">--:--</td></tr>
-        <tr data-prayer="dhuhr"><td>Dhuhr</td><td id="dhuhrTime">--:--</td></tr>
+        <tr id="dhuhrRow" data-prayer="dhuhr"><td>Dhuhr</td><td id="dhuhrTime">--:--</td></tr>
+        <tr id="jumah1Row" data-prayer="jumah1"><td>Jumah 1</td><td id="jumah1Time">--:--</td></tr>
+        <tr id="jumah2Row" data-prayer="jumah2"><td>Jumah 2</td><td id="jumah2Time">--:--</td></tr>
         <tr data-prayer="asr"><td>Asr</td><td id="asrTime">--:--</td></tr>
         <tr data-prayer="maghrib"><td>Maghrib</td><td id="maghribTime">--:--</td></tr>
         <tr data-prayer="isha"><td>Isha</td><td id="ishaTime">--:--</td></tr>
-        <tr data-prayer="jumah1"><td>Jumah 1</td><td id="jumah1Time">--:--</td></tr>
-        <tr data-prayer="jumah2"><td>Jumah 2</td><td id="jumah2Time">--:--</td></tr>
       </table>
     </div>
 
@@ -333,24 +286,11 @@
     <div class="footer">contact@mosqueaisha.ca • (905) 347-2633</div>
   </div>
 
-  <div id="adminPortal">
-    <h3>Admin Panel</h3>
-    <input id="fajrInput" placeholder="Fajr">
-    <input id="dhuhrInput" placeholder="Dhuhr">
-    <input id="asrInput" placeholder="Asr">
-    <input id="maghribInput" placeholder="Maghrib">
-    <input id="ishaInput" placeholder="Isha">
-    <input id="jumah1Input" placeholder="Jumah 1">
-    <input id="jumah2Input" placeholder="Jumah 2">
-    <button id="updateTimesBtn">Update Times</button>
-  </div>
-
   <script>
     const TIMEZONE = "America/Toronto";
 
     const CONFIG = {
-      prayerJsonUrl: "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/prayerTimes.json",
-      maghribApiUrl: "https://api.aladhan.com/v1/timingsByCity?city=Niagara%20Falls&country=Canada&method=2",
+      prayerApiUrl: "https://api.mosqueaisha.ca/mosque-api/prayerTimes/regular/1?admin=false",
       autoReloadMs: 60 * 60 * 1000,
       imageRotateMs: 15000
     };
@@ -369,7 +309,6 @@
         jumah1: "--:--",
         jumah2: "--:--"
       },
-      fallbackMaghrib: "--:--",
       imageIndex: 0
     };
 
@@ -378,6 +317,41 @@
     function setText(id, value) {
       const el = $(id);
       if (el) el.textContent = value || "--";
+    }
+
+    function formatDisplayTime(timeStr) {
+      if (!timeStr || timeStr === "--:--") return "--:--";
+
+      const cleaned = String(timeStr).trim();
+      const match12 = cleaned.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+      const match24 = cleaned.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+
+      if (match12) {
+        const h = parseInt(match12[1], 10);
+        const m = match12[2];
+        const meridian = match12[3].toUpperCase();
+        return `${h}:${m} ${meridian}`;
+      }
+
+      if (match24) {
+        let hours = parseInt(match24[1], 10);
+        const minutes = match24[2];
+        const meridian = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+        return `${hours}:${minutes} ${meridian}`;
+      }
+
+      return cleaned;
+    }
+
+    function getTorontoNow() {
+      return new Date(
+        new Date().toLocaleString("en-US", { timeZone: TIMEZONE })
+      );
+    }
+
+    function isFridayToronto() {
+      return getTorontoNow().getDay() === 5;
     }
 
     function updateClock() {
@@ -402,17 +376,18 @@
       setText("currentDate", dateText);
       setText("currentTime", timeText);
 
+      toggleFridayRows();
       updateNextPrayer();
     }
 
     function renderPrayerTimes() {
-      setText("fajrTime", state.prayers.fajr);
-      setText("dhuhrTime", state.prayers.dhuhr);
-      setText("asrTime", state.prayers.asr);
-      setText("maghribTime", state.prayers.maghrib);
-      setText("ishaTime", state.prayers.isha);
-      setText("jumah1Time", state.prayers.jumah1);
-      setText("jumah2Time", state.prayers.jumah2);
+      setText("fajrTime", formatDisplayTime(state.prayers.fajr));
+      setText("dhuhrTime", formatDisplayTime(state.prayers.dhuhr));
+      setText("asrTime", formatDisplayTime(state.prayers.asr));
+      setText("maghribTime", formatDisplayTime(state.prayers.maghrib));
+      setText("ishaTime", formatDisplayTime(state.prayers.isha));
+      setText("jumah1Time", formatDisplayTime(state.prayers.jumah1));
+      setText("jumah2Time", formatDisplayTime(state.prayers.jumah2));
     }
 
     function parseTimeToday(timeStr) {
@@ -420,12 +395,9 @@
 
       const cleaned = String(timeStr).trim();
       const match12 = cleaned.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-      const match24 = cleaned.match(/^(\d{1,2}):(\d{2})$/);
+      const match24 = cleaned.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
 
-      const now = new Date();
-      const localNow = new Date(
-        now.toLocaleString("en-US", { timeZone: TIMEZONE })
-      );
+      const localNow = getTorontoNow();
 
       let hours;
       let minutes;
@@ -470,16 +442,20 @@
       });
     }
 
+    function toggleFridayRows() {
+      const friday = isFridayToronto();
+
+      $("dhuhrRow").style.display = friday ? "none" : "table-row";
+      $("jumah1Row").style.display = friday ? "table-row" : "none";
+      $("jumah2Row").style.display = friday ? "table-row" : "none";
+    }
+
     function updateNextPrayer() {
       clearActivePrayerRow();
 
-      const now = new Date(
-        new Date().toLocaleString("en-US", { timeZone: TIMEZONE })
-      );
+      const now = getTorontoNow();
 
-      const isFriday = now.getDay() === 5;
-
-      const schedule = isFriday
+      const schedule = isFridayToronto()
         ? [
             { key: "fajr", label: "Fajr", time: state.prayers.fajr },
             { key: "jumah1", label: "Jumah 1", time: state.prayers.jumah1 },
@@ -515,7 +491,6 @@
 
         if (tomorrowFajr) {
           tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
-
           nextPrayer = {
             key: "fajr",
             label: "Fajr",
@@ -535,7 +510,7 @@
       const diff = nextPrayer.date - now;
 
       setText("nextPrayerName", nextPrayer.label);
-      setText("nextPrayerMeta", nextPrayer.time);
+      setText("nextPrayerMeta", formatDisplayTime(nextPrayer.time));
       setText("countdown", formatCountdown(diff));
 
       const activeRow = document.querySelector(`tr[data-prayer="${nextPrayer.key}"]`);
@@ -544,47 +519,40 @@
 
     async function loadPrayerTimes() {
       try {
-        const response = await fetch(CONFIG.prayerJsonUrl, { cache: "no-store" });
-        if (!response.ok) throw new Error("Failed to fetch prayerTimes.json");
+        const response = await fetch(CONFIG.prayerApiUrl, { cache: "no-store" });
+        if (!response.ok) throw new Error("Failed to fetch prayer times API");
 
         const data = await response.json();
+        const items = Array.isArray(data) ? data : (Array.isArray(data?.data) ? data.data : []);
 
-        state.prayers.fajr = data.fajr || "--:--";
-        state.prayers.dhuhr = data.dhuhr || "--:--";
-        state.prayers.asr = data.asr || "--:--";
-        state.prayers.maghrib = data.maghrib || "--:--";
-        state.prayers.isha = data.isha || "--:--";
-        state.prayers.jumah1 = data.jumah1 || "--:--";
-        state.prayers.jumah2 = data.jumah2 || "--:--";
+        const map = {};
 
-        state.fallbackMaghrib = state.prayers.maghrib;
+        items.forEach((item) => {
+          const name = String(item?.name || "").toLowerCase().trim();
+          const time = item?.time || "--:--";
+
+          if (name === "fajr") map.fajr = time;
+          if (name === "dhuhr") map.dhuhr = time;
+          if (name === "asr") map.asr = time;
+          if (name === "maghrib") map.maghrib = time;
+          if (name === "isha") map.isha = time;
+          if (name === "jummah 1" || name === "jumah 1") map.jumah1 = time;
+          if (name === "jummah 2" || name === "jumah 2") map.jumah2 = time;
+        });
+
+        state.prayers.fajr = map.fajr || "--:--";
+        state.prayers.dhuhr = map.dhuhr || "--:--";
+        state.prayers.asr = map.asr || "--:--";
+        state.prayers.maghrib = map.maghrib || "--:--";
+        state.prayers.isha = map.isha || "--:--";
+        state.prayers.jumah1 = map.jumah1 || "--:--";
+        state.prayers.jumah2 = map.jumah2 || "--:--";
 
         renderPrayerTimes();
+        toggleFridayRows();
         updateNextPrayer();
       } catch (err) {
-        console.error("Error loading JSON prayer times:", err);
-      }
-
-      fetchMaghribTime();
-    }
-
-    async function fetchMaghribTime() {
-      try {
-        const response = await fetch(CONFIG.maghribApiUrl, { cache: "no-store" });
-        if (!response.ok) throw new Error("Failed to fetch Maghrib API");
-
-        const data = await response.json();
-        const apiMaghrib = data?.data?.timings?.Maghrib;
-
-        state.prayers.maghrib = apiMaghrib || state.fallbackMaghrib;
-
-        renderPrayerTimes();
-        updateNextPrayer();
-      } catch (err) {
-        console.error("Error loading Maghrib API:", err);
-        state.prayers.maghrib = state.fallbackMaghrib;
-        renderPrayerTimes();
-        updateNextPrayer();
+        console.error("Error loading prayer times API:", err);
       }
     }
 
@@ -596,30 +564,7 @@
       state.imageIndex = (state.imageIndex + 1) % images.length;
     }
 
-    function updateAdminTimes() {
-      const keys = ["fajr", "dhuhr", "asr", "maghrib", "isha", "jumah1", "jumah2"];
-
-      keys.forEach((key) => {
-        const input = $(`${key}Input`);
-        if (input && input.value.trim()) {
-          state.prayers[key] = input.value.trim();
-        }
-      });
-
-      state.fallbackMaghrib = state.prayers.maghrib;
-      renderPrayerTimes();
-      updateNextPrayer();
-    }
-
-    function toggleAdmin(e) {
-      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-        $("adminPortal").classList.toggle("show");
-      }
-    }
-
-    $("updateTimesBtn").addEventListener("click", updateAdminTimes);
-    document.addEventListener("keydown", toggleAdmin);
-
+    toggleFridayRows();
     updateClock();
     setInterval(updateClock, 1000);
 
