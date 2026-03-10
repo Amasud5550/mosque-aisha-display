@@ -126,6 +126,8 @@
       <tr><td>Asr</td><td id="asrTime">--:--</td></tr>
       <tr><td>Maghrib (Sunset)</td><td id="maghribTime">--:--</td></tr>
       <tr><td>Isha</td><td id="ishaTime">--:--</td></tr>
+      <tr><td>Jumah 1</td><td id="jumah1Time">--:--</td></tr>
+      <tr><td>Jumah2</td><td id="jumah2Time">--:--</td></tr>
     </table>
   </div>
 
@@ -140,6 +142,8 @@
     <input id="asrInput" placeholder="Asr">
     <input id="maghribInput" placeholder="Maghrib">
     <input id="ishaInput" placeholder="Isha">
+    <input id="jumah1Input" placeholder="Jumah 1">
+    <input id="jumah2Input" placeholder="Jumah2">
     <button id="updateTimesBtn">Update</button>
   </div>
 
@@ -165,6 +169,8 @@ async function loadPrayerTimesFromJSON() {
     document.getElementById("dhuhrTime").innerText = data.dhuhr;
     document.getElementById("asrTime").innerText = data.asr;
     document.getElementById("ishaTime").innerText = data.isha;
+    document.getElementById("jumah1Time").innerText = data.isha;
+    document.getElementById("jumah2Time").innerText = data.isha;
 
     fallbackMaghrib = data.maghrib || fallbackMaghrib;
 
@@ -207,6 +213,8 @@ document.getElementById("updateTimesBtn").onclick = () => {
   document.getElementById("asrTime").innerText = asrInput.value || "--:--";
   document.getElementById("maghribTime").innerText = maghribInput.value || "--:--";
   document.getElementById("ishaTime").innerText = ishaInput.value || "--:--";
+  document.getElementById("jumah1Time").innerText = jumah1Input.value || "--:--";
+  document.getElementById("jumah2Time").innerText = jumah2Input.value || "--:--";
 };
 
 document.addEventListener("keydown", (e) => {
