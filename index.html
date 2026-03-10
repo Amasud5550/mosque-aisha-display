@@ -49,7 +49,7 @@
       height: 1920px;
       padding: 40px 50px;
       display: grid;
-      grid-template-rows: auto auto auto 1fr auto auto auto;
+      grid-template-rows: auto auto auto auto 1fr auto;
       gap: 24px;
       background: var(--bg);
     }
@@ -151,7 +151,7 @@
     }
 
     .statusBar {
-      min-height: 44px;
+      min-height: 36px;
       font-size: 24px;
       text-align: center;
       color: var(--muted);
@@ -304,7 +304,7 @@
     const TIMEZONE = "America/Toronto";
 
     const CONFIG = {
-      prayerApiUrl: "https://api.mosqueaisha.ca/mosque-api/prayerTimes/regular/1?admin=false",
+      prayerJsonUrl: "./prayerTimes.json",
       autoReloadMs: 60 * 60 * 1000,
       imageRotateMs: 15000
     };
@@ -542,48 +542,19 @@
       try {
         setStatus("Loading prayer times...");
 
-        const response = await fetch(CONFIG.prayerApiUrl, { cache: "no-store" });
+        const response = await fetch(CONFIG.prayerJsonUrl, { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const data = await response.json();
-        console.log("Prayer API raw response:", data);
+        console.log("Prayer JSON response:", data);
 
-        const items = Array.isArray(data)
-          ? data
-          : Array.isArray(data?.data)
-            ? data.data
-            : [];
-
-        console.log("Prayer API parsed items:", items);
-
-        if (!items.length) {
-          throw new Error("API returned no prayer items");
-        }
-
-        const map = {};
-
-        items.forEach((item) => {
-          const name = String(item?.name || "").toLowerCase().trim();
-          const time = String(item?.time || "").trim();
-
-          if (name === "fajr") map.fajr = time;
-          if (name === "dhuhr") map.dhuhr = time;
-          if (name === "asr") map.asr = time;
-          if (name === "maghrib") map.maghrib = time;
-          if (name === "isha") map.isha = time;
-          if (name === "jummah 1" || name === "jumah 1") map.jumah1 = time;
-          if (name === "jummah 2" || name === "jumah 2") map.jumah2 = time;
-        });
-
-        console.log("Mapped prayer times:", map);
-
-        state.prayers.fajr = map.fajr || "--:--";
-        state.prayers.dhuhr = map.dhuhr || "--:--";
-        state.prayers.asr = map.asr || "--:--";
-        state.prayers.maghrib = map.maghrib || "--:--";
-        state.prayers.isha = map.isha || "--:--";
-        state.prayers.jumah1 = map.jumah1 || "--:--";
-        state.prayers.jumah2 = map.jumah2 || "--:--";
+        state.prayers.fajr = data.fajr || "--:--";
+        state.prayers.dhuhr = data.dhuhr || "--:--";
+        state.prayers.asr = data.asr || "--:--";
+        state.prayers.maghrib = data.maghrib || "--:--";
+        state.prayers.isha = data.isha || "--:--";
+        state.prayers.jumah1 = data.jumah1 || "--:--";
+        state.prayers.jumah2 = data.jumah2 || "--:--";
 
         renderPrayerTimes();
         toggleFridayRows();
@@ -591,8 +562,8 @@
 
         setStatus("Prayer times loaded");
       } catch (err) {
-        console.error("Error loading prayer times API:", err);
-        setStatus(`Prayer API failed: ${err.message}`, true);
+        console.error("Error loading prayerTimes.json:", err);
+        setStatus(`Prayer JSON failed: ${err.message}`, true);
       }
     }
 
