@@ -303,6 +303,11 @@
   <script>
     const TIMEZONE = "America/Toronto";
 
+    const NIAGARA_FALLS = {
+      lat: 43.0896,
+      lng: -79.0849
+    };
+
     const CONFIG = {
       prayerJsonUrl: "./prayerTimes.json",
       autoReloadMs: 60 * 60 * 1000,
@@ -538,12 +543,40 @@
       if (activeRow) activeRow.classList.add("active");
     }
 
+    function utcToTorontoTimeString(utcString) {
+      const date = new Date(utcString);
+
+      return new Intl.DateTimeFormat("en-CA", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: TIMEZONE
+      }).format(date);
+    }
+
+    async function loadSunsetForNiagaraFalls() {
+      const url = `https://api.sunrise-sunset.org/json?lat=${NIAGARA_FALLS.lat}&lng=${NIAGARA_FALLS.lng}&formatted=0`;
+
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`Sunset API HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.status !== "OK" || !data.results || !data.results.sunset) {
+        throw new Error("Sunset API returned invalid data");
+      }
+
+      return utcToTorontoTimeString(data.results.sunset);
+    }
+
     async function loadPrayerTimes() {
       try {
         setStatus("Loading prayer times...");
 
         const response = await fetch(CONFIG.prayerJsonUrl, { cache: "no-store" });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) throw new Error(`Prayer JSON HTTP ${response.status}`);
 
         const data = await response.json();
         console.log("Prayer JSON response:", data);
@@ -551,10 +584,12 @@
         state.prayers.fajr = data.fajr || "--:--";
         state.prayers.dhuhr = data.dhuhr || "--:--";
         state.prayers.asr = data.asr || "--:--";
-        state.prayers.maghrib = data.maghrib || "--:--";
         state.prayers.isha = data.isha || "--:--";
         state.prayers.jumah1 = data.jumah1 || "--:--";
         state.prayers.jumah2 = data.jumah2 || "--:--";
+
+        // Override Maghrib every day using Niagara Falls sunset
+        state.prayers.maghrib = await loadSunsetForNiagaraFalls();
 
         renderPrayerTimes();
         toggleFridayRows();
@@ -562,8 +597,8 @@
 
         setStatus("Prayer times loaded");
       } catch (err) {
-        console.error("Error loading prayerTimes.json:", err);
-        setStatus(`Prayer JSON failed: ${err.message}`, true);
+        console.error("Error loading prayer times:", err);
+        setStatus(`Prayer times failed: ${err.message}`, true);
       }
     }
 
