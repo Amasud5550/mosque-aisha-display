@@ -2,197 +2,642 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0" />
   <title>Mosque Aisha Display</title>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #001f3f;
-      color: white;
-      text-align: center;
-      margin: 0;
-    }
-    .logo {
-      margin-top: 20px;
-      width: 200px;
-    }
-    .welcome {
-      font-size: 40px;
-      font-weight: bold;
-      margin: 15px 0;
-    }
-    .date, .time {
-      font-size: 28px;
-      margin-bottom: 10px;
-    }
-    .image {
-      width: 50%;
-      max-width: 1600px;
-      border: 1px solid #ccc;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
-      margin: 10px 0;
-    }
-    .prayer-times {
-      background-color: rgba(255,255,255,0.1);
-      padding: 15px 25px;
-      border-radius: 10px;
-      margin: 10px 0;
-    }
-    .prayer-times table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 22px;
-    }
-    .prayer-times td {
-      padding: 5px 15px;
-    }
-    .contact {
-      font-size: 20px;
-      font-weight: bold;
-      margin: 15px 0;
+    :root {
+      --bg: #031a33;
+      --panel: rgba(255, 255, 255, 0.08);
+      --text: #ffffff;
+      --muted: #d7e4f2;
+      --accent: #ffd166;
+      --line: rgba(255, 255, 255, 0.12);
+      --green: #7ef29a;
+      --error: #ff8a8a;
+
+      --font-xl: 72px;
+      --font-lg: 44px;
+      --font-md: 34px;
+      --font-sm: 28px;
+      --font-xs: 22px;
     }
 
-    /* Admin Portal */
-    #adminPortal {
-      display: none;
-      flex-direction: column;
-      background: rgba(0,0,0,0.8);
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 20px;
+    * {
+      box-sizing: border-box;
     }
-    #adminPortal input {
-      margin: 5px 0;
-      padding: 6px;
-      border: none;
-      border-radius: 6px;
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #021428, #062346);
+      color: var(--text);
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .screen {
+      width: 1080px;
+      height: 1920px;
+      padding: 40px 50px;
+      display: grid;
+      grid-template-rows: auto auto auto auto 1fr auto;
+      gap: 24px;
+      background: var(--bg);
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .logo {
+      width: 170px;
+      height: auto;
+      object-fit: contain;
+      justify-self: center;
+    }
+
+    .heading {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .title {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      font-size: var(--font-md);
+      color: var(--muted);
+    }
+
+    .datetimeRow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .infoCard {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px 28px;
       text-align: center;
     }
-    #adminPortal button {
+
+    .infoLabel {
+      font-size: var(--font-xs);
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .infoValue {
+      font-size: var(--font-lg);
+      font-weight: 700;
+    }
+
+    .nextPrayerCard {
+      background: linear-gradient(135deg, rgba(255, 209, 102, 0.18), rgba(255, 209, 102, 0.08));
+      border: 2px solid rgba(255, 209, 102, 0.35);
+      border-radius: 24px;
+      padding: 24px 30px;
+      text-align: center;
+    }
+
+    .nextPrayerTitle {
+      font-size: var(--font-sm);
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nextPrayerName {
+      font-size: 64px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .nextPrayerMeta {
+      font-size: var(--font-md);
+      color: var(--text);
+    }
+
+    .countdown {
       margin-top: 10px;
-      padding: 8px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background-color: #0074d9;
-      color: white;
-      font-size: 16px;
+      font-size: var(--font-sm);
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .statusBar {
+      min-height: 36px;
+      font-size: 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .statusBar.error {
+      color: var(--error);
+      font-weight: 700;
+    }
+
+    .tableCard {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 26px 28px;
+    }
+
+    .tableTitle {
+      margin: 0 0 18px 0;
+      text-align: center;
+      font-size: 42px;
+      font-weight: 800;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    tr {
+      border-bottom: 1px solid var(--line);
+    }
+
+    tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 18px 10px;
+      font-size: 38px;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    td:last-child {
+      text-align: right;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    tr.active {
+      background: rgba(255, 209, 102, 0.12);
+    }
+
+    tr.active td:first-child,
+    tr.active td:last-child {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .imageWrap {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      min-height: 420px;
+    }
+
+    .image {
+      width: 100%;
+      height: 100%;
+      max-height: 390px;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: var(--font-sm);
+      font-weight: 700;
+      color: var(--text);
+      padding-top: 6px;
     }
   </style>
 </head>
-
 <body>
-  <img src="https://mosqueaisha.ca/assets/logo-clear.png" alt="Mosque Aisha Logo" class="logo">
-  <div class="welcome">Welcome to Mosque Aisha Niagara Falls</div>
-  <div class="date" id="currentDate"></div>
-  <div class="time" id="currentTime"></div>
+  <div class="screen">
+    <div class="top">
+      <img
+        src="https://mosqueaisha.ca/assets/logo-clear.png"
+        alt="Mosque Aisha logo"
+        class="logo"
+      />
 
-  <div class="prayer-times" id="prayerTimes">
-    <h2>Today's Prayer Times</h2>
-    <table id="timesTable">
-      <tr><td>Fajr</td><td id="fajrTime">--:--</td></tr>
-      <tr><td>Dhuhr</td><td id="dhuhrTime">--:--</td></tr>
-      <tr><td>Asr</td><td id="asrTime">--:--</td></tr>
-      <tr><td>Maghrib (Sunset)</td><td id="maghribTime">--:--</td></tr>
-      <tr><td>Isha</td><td id="ishaTime">--:--</td></tr>
-    </table>
+      <div class="heading">
+        <h1 class="title">Mosque Aisha</h1>
+        <div class="subtitle">Niagara Falls, Ontario</div>
+      </div>
+    </div>
+
+    <div class="datetimeRow">
+      <div class="infoCard">
+        <div class="infoLabel">Today</div>
+        <div id="currentDate" class="infoValue">--</div>
+      </div>
+
+      <div class="infoCard">
+        <div class="infoLabel">Current Time</div>
+        <div id="currentTime" class="infoValue">--</div>
+      </div>
+    </div>
+
+    <div class="nextPrayerCard">
+      <div class="nextPrayerTitle">Next Prayer</div>
+      <div id="nextPrayerName" class="nextPrayerName">Loading...</div>
+      <div id="nextPrayerMeta" class="nextPrayerMeta">--</div>
+      <div id="countdown" class="countdown">--</div>
+    </div>
+
+    <div id="statusBar" class="statusBar">Loading prayer times...</div>
+
+    <div class="tableCard">
+      <h2 class="tableTitle">Today's Prayer Times</h2>
+      <table>
+        <tr data-prayer="fajr"><td>Fajr</td><td id="fajrTime">--:--</td></tr>
+        <tr id="dhuhrRow" data-prayer="dhuhr"><td>Dhuhr</td><td id="dhuhrTime">--:--</td></tr>
+        <tr id="jumah1Row" data-prayer="jumah1"><td>Jumah 1</td><td id="jumah1Time">--:--</td></tr>
+        <tr id="jumah2Row" data-prayer="jumah2"><td>Jumah 2</td><td id="jumah2Time">--:--</td></tr>
+        <tr data-prayer="asr"><td>Asr</td><td id="asrTime">--:--</td></tr>
+        <tr data-prayer="maghrib"><td>Maghrib</td><td id="maghribTime">--:--</td></tr>
+        <tr data-prayer="isha"><td>Isha</td><td id="ishaTime">--:--</td></tr>
+      </table>
+    </div>
+
+    <div class="imageWrap">
+      <img id="rotatingImage" class="image" alt="Community announcement" />
+    </div>
+
+    <div class="footer">contact@mosqueaisha.ca • (905) 347-2633</div>
   </div>
 
-  <img id="rotatingImage" src="" alt="Mosque Aisha Display" class="image">
+  <script>
+    const TIMEZONE = "America/Toronto";
 
-  <div class="contact">Contact@mosqueaisha.ca | (905) 347-2633</div>
+    const NIAGARA_FALLS = {
+      lat: 43.0896,
+      lng: -79.0849
+    };
 
-  <!-- Admin Portal -->
-  <div id="adminPortal">
-    <input id="fajrInput" placeholder="Fajr (e.g. 05:56 AM)" />
-    <input id="dhuhrInput" placeholder="Dhuhr (e.g. 12:13 PM)" />
-    <input id="asrInput" placeholder="Asr (e.g. 03:28 PM)" />
-    <input id="maghribInput" placeholder="Maghrib (e.g. 05:05 PM)" />
-    <input id="ishaInput" placeholder="Isha (e.g. 06:25 PM)" />
-    <button id="updateTimesBtn">Update Prayer Times (Local Only)</button>
-  </div>
+    const CONFIG = {
+      prayerJsonUrl: "./prayerTimes.json",
+      autoReloadMs: 60 * 60 * 1000,
+      imageRotateMs: 15000
+    };
 
-<script>
-// Date + Time
-function updateTimeAndDate() {
-  const now = new Date();
-  document.getElementById("currentDate").innerText = now.toDateString();
-  document.getElementById("currentTime").innerText = now.toLocaleTimeString();
-}
-setInterval(updateTimeAndDate, 1000);
-updateTimeAndDate();
+    const images = [
+      "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/CommunityIftar26.jpeg",
+      "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp%20Image%202025-04-20%20at%2020.45.41.jpeg"
+    ];
 
-// Load JSON prayer times
-async function loadPrayerTimesFromJSON() {
-  try {
-    const response = await fetch("https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/prayerTimes.json");
-    const data = await response.json();
+    const state = {
+      prayers: {
+        fajr: "--:--",
+        dhuhr: "--:--",
+        asr: "--:--",
+        maghrib: "--:--",
+        isha: "--:--",
+        jumah1: "--:--",
+        jumah2: "--:--"
+      },
+      imageIndex: 0
+    };
 
-    document.getElementById("fajrTime").innerText = data.fajr;
-    document.getElementById("dhuhrTime").innerText = data.dhuhr;
-    document.getElementById("asrTime").innerText = data.asr;
-    document.getElementById("ishaTime").innerText = data.isha;
+    const $ = (id) => document.getElementById(id);
 
-    fetchMaghribTime();
-  } catch (err) {
-    console.error("Error loading prayer times:", err);
-  }
-}
+    function setText(id, value) {
+      const el = $(id);
+      if (el) el.textContent = value || "--";
+    }
 
-// Fetch Maghrib (sunset)
-async function fetchMaghribTime() {
-  try {
-    const response = await fetch("https://api.aladhan.com/v1/timingsByCity?city=Niagara%20Falls&country=Canada&method=2");
-    const data = await response.json();
-    document.getElementById("maghribTime").innerText = data.data.timings.Maghrib;
-  } catch (err) {
-    console.error("Error fetching Maghrib time:", err);
-  }
-}
+    function setStatus(message, isError = false) {
+      const bar = $("statusBar");
+      if (!bar) return;
+      bar.textContent = message;
+      bar.className = isError ? "statusBar error" : "statusBar";
+    }
 
-// Rotate images
-const images = [
-  "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp%20Image%202025-04-20%20at%2020.45.41.jpeg"
-];
-let currentImageIndex = 0;
-const rotatingImageElement = document.getElementById("rotatingImage");
+    function normalizeTimeString(timeStr) {
+      if (!timeStr) return "--:--";
 
-function rotateImages() {
-  rotatingImageElement.src = images[currentImageIndex];
-  currentImageIndex = (currentImageIndex + 1) % images.length;
-}
-setInterval(rotateImages, 15000);
-rotateImages();
+      let cleaned = String(timeStr).trim();
 
-// Admin update local values
-document.getElementById("updateTimesBtn").onclick = function () {
-  document.getElementById("fajrTime").innerText = document.getElementById("fajrInput").value || "--:--";
-  document.getElementById("dhuhrTime").innerText = document.getElementById("dhuhrInput").value || "--:--";
-  document.getElementById("asrTime").innerText = document.getElementById("asrInput").value || "--:--";
-  document.getElementById("maghribTime").innerText = document.getElementById("maghribInput").value || "--:--";
-  document.getElementById("ishaTime").innerText = document.getElementById("ishaInput").value || "--:--";
-};
+      cleaned = cleaned
+        .replace(/\u202F|\u00A0/g, " ")
+        .replace(/\./g, "")
+        .replace(/\s+/g, " ")
+        .toUpperCase();
 
-// Toggle admin portal: Ctrl + Shift + A
-document.addEventListener("keydown", function (e) {
-  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
-    const adminPortal = document.getElementById("adminPortal");
-    adminPortal.style.display = adminPortal.style.display === "flex" ? "none" : "flex";
-  }
-});
+      const match12 = cleaned.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
+      if (match12) {
+        const h = parseInt(match12[1], 10);
+        const m = match12[2];
+        const meridian = match12[3];
+        return `${h}:${m} ${meridian}`;
+      }
 
-// Auto refresh every 1 hour
-setInterval(() => {
-  window.location.reload();
-}, 3600000);
+      const match24 = cleaned.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+      if (match24) {
+        let hours = parseInt(match24[1], 10);
+        const minutes = match24[2];
+        const meridian = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+        return `${hours}:${minutes} ${meridian}`;
+      }
 
-loadPrayerTimesFromJSON();
-</script>
+      return cleaned;
+    }
 
+    function formatDisplayTime(timeStr) {
+      if (!timeStr || timeStr === "--:--") return "--:--";
+      return normalizeTimeString(timeStr);
+    }
+
+    function getTorontoNow() {
+      return new Date(
+        new Date().toLocaleString("en-US", { timeZone: TIMEZONE })
+      );
+    }
+
+    function isFridayToronto() {
+      return getTorontoNow().getDay() === 5;
+    }
+
+    function updateClock() {
+      const now = new Date();
+
+      const dateText = new Intl.DateTimeFormat("en-CA", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        timeZone: TIMEZONE
+      }).format(now);
+
+      const timeText = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+        timeZone: TIMEZONE
+      }).format(now);
+
+      setText("currentDate", dateText);
+      setText("currentTime", normalizeTimeString(timeText));
+
+      toggleFridayRows();
+      updateNextPrayer();
+    }
+
+    function renderPrayerTimes() {
+      setText("fajrTime", formatDisplayTime(state.prayers.fajr));
+      setText("dhuhrTime", formatDisplayTime(state.prayers.dhuhr));
+      setText("asrTime", formatDisplayTime(state.prayers.asr));
+      setText("maghribTime", formatDisplayTime(state.prayers.maghrib));
+      setText("ishaTime", formatDisplayTime(state.prayers.isha));
+      setText("jumah1Time", formatDisplayTime(state.prayers.jumah1));
+      setText("jumah2Time", formatDisplayTime(state.prayers.jumah2));
+    }
+
+    function parseTimeToday(timeStr) {
+      if (!timeStr || timeStr === "--:--") return null;
+
+      const cleaned = normalizeTimeString(timeStr);
+      const match12 = cleaned.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
+      const match24 = cleaned.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+
+      const localNow = getTorontoNow();
+
+      let hours;
+      let minutes;
+
+      if (match12) {
+        hours = parseInt(match12[1], 10);
+        minutes = parseInt(match12[2], 10);
+        const meridian = match12[3];
+
+        if (meridian === "PM" && hours !== 12) hours += 12;
+        if (meridian === "AM" && hours === 12) hours = 0;
+      } else if (match24) {
+        hours = parseInt(match24[1], 10);
+        minutes = parseInt(match24[2], 10);
+      } else {
+        return null;
+      }
+
+      const prayerDate = new Date(localNow);
+      prayerDate.setHours(hours, minutes, 0, 0);
+      return prayerDate;
+    }
+
+    function formatCountdown(ms) {
+      if (ms <= 0) return "Now";
+
+      const totalSeconds = Math.floor(ms / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (hours > 0) {
+        return `${hours}h ${minutes}m ${seconds}s remaining`;
+      }
+
+      return `${minutes}m ${seconds}s remaining`;
+    }
+
+    function clearActivePrayerRow() {
+      document.querySelectorAll("tr[data-prayer]").forEach((row) => {
+        row.classList.remove("active");
+      });
+    }
+
+    function toggleFridayRows() {
+      const friday = isFridayToronto();
+
+      $("dhuhrRow").style.display = friday ? "none" : "table-row";
+      $("jumah1Row").style.display = friday ? "table-row" : "none";
+      $("jumah2Row").style.display = friday ? "table-row" : "none";
+    }
+
+    function updateNextPrayer() {
+      clearActivePrayerRow();
+
+      const now = getTorontoNow();
+
+      const schedule = isFridayToronto()
+        ? [
+            { key: "fajr", label: "Fajr", time: state.prayers.fajr },
+            { key: "jumah1", label: "Jumah 1", time: state.prayers.jumah1 },
+            { key: "jumah2", label: "Jumah 2", time: state.prayers.jumah2 },
+            { key: "asr", label: "Asr", time: state.prayers.asr },
+            { key: "maghrib", label: "Maghrib", time: state.prayers.maghrib },
+            { key: "isha", label: "Isha", time: state.prayers.isha }
+          ]
+        : [
+            { key: "fajr", label: "Fajr", time: state.prayers.fajr },
+            { key: "dhuhr", label: "Dhuhr", time: state.prayers.dhuhr },
+            { key: "asr", label: "Asr", time: state.prayers.asr },
+            { key: "maghrib", label: "Maghrib", time: state.prayers.maghrib },
+            { key: "isha", label: "Isha", time: state.prayers.isha }
+          ];
+
+      let nextPrayer = null;
+
+      for (const prayer of schedule) {
+        const prayerDate = parseTimeToday(prayer.time);
+
+        if (prayerDate && prayerDate > now) {
+          nextPrayer = {
+            ...prayer,
+            date: prayerDate
+          };
+          break;
+        }
+      }
+
+      if (!nextPrayer) {
+        const tomorrowFajr = parseTimeToday(state.prayers.fajr);
+
+        if (tomorrowFajr) {
+          tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
+          nextPrayer = {
+            key: "fajr",
+            label: "Fajr",
+            time: state.prayers.fajr,
+            date: tomorrowFajr
+          };
+        }
+      }
+
+      if (!nextPrayer) {
+        setText("nextPrayerName", "Unavailable");
+        setText("nextPrayerMeta", "--");
+        setText("countdown", "--");
+        return;
+      }
+
+      const diff = nextPrayer.date - now;
+
+      setText("nextPrayerName", nextPrayer.label);
+      setText("nextPrayerMeta", formatDisplayTime(nextPrayer.time));
+      setText("countdown", formatCountdown(diff));
+
+      const activeRow = document.querySelector(`tr[data-prayer="${nextPrayer.key}"]`);
+      if (activeRow) activeRow.classList.add("active");
+    }
+
+    function utcToTorontoTimeString(utcString) {
+      const date = new Date(utcString);
+
+      const parts = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: TIMEZONE
+      }).formatToParts(date);
+
+      const hour = parts.find(p => p.type === "hour")?.value || "--";
+      const minute = parts.find(p => p.type === "minute")?.value || "--";
+      const dayPeriod = parts.find(p => p.type === "dayPeriod")?.value?.toUpperCase() || "";
+
+      return `${hour}:${minute} ${dayPeriod}`;
+    }
+
+    async function loadSunsetForNiagaraFalls() {
+      const url = `https://api.sunrise-sunset.org/json?lat=${NIAGARA_FALLS.lat}&lng=${NIAGARA_FALLS.lng}&formatted=0`;
+
+      const response = await fetch(url, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`Sunset API HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.status !== "OK" || !data.results || !data.results.sunset) {
+        throw new Error("Sunset API returned invalid data");
+      }
+
+      return utcToTorontoTimeString(data.results.sunset);
+    }
+
+    async function loadPrayerTimes() {
+      try {
+        setStatus("Loading prayer times...");
+
+        const response = await fetch(CONFIG.prayerJsonUrl, { cache: "no-store" });
+        if (!response.ok) throw new Error(`Prayer JSON HTTP ${response.status}`);
+
+        const data = await response.json();
+
+        state.prayers.fajr = normalizeTimeString(data.fajr || "--:--");
+        state.prayers.dhuhr = normalizeTimeString(data.dhuhr || "--:--");
+        state.prayers.asr = normalizeTimeString(data.asr || "--:--");
+        state.prayers.isha = normalizeTimeString(data.isha || "--:--");
+        state.prayers.jumah1 = normalizeTimeString(data.jumah1 || "--:--");
+        state.prayers.jumah2 = normalizeTimeString(data.jumah2 || "--:--");
+
+        state.prayers.maghrib = normalizeTimeString(await loadSunsetForNiagaraFalls());
+
+        renderPrayerTimes();
+        toggleFridayRows();
+        updateNextPrayer();
+
+        setStatus("Prayer times loaded");
+      } catch (err) {
+        console.error("Error loading prayer times:", err);
+        setStatus(`Prayer times failed: ${err.message}`, true);
+      }
+    }
+
+    function rotateImages() {
+      const imageEl = $("rotatingImage");
+      if (!imageEl || images.length === 0) return;
+
+      imageEl.src = images[state.imageIndex];
+      state.imageIndex = (state.imageIndex + 1) % images.length;
+    }
+
+    toggleFridayRows();
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    rotateImages();
+    if (images.length > 1) {
+      setInterval(rotateImages, CONFIG.imageRotateMs);
+    }
+
+    setInterval(() => location.reload(), CONFIG.autoReloadMs);
+
+    loadPrayerTimes();
+  </script>
 </body>
 </html>
