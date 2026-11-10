@@ -31,6 +31,33 @@
       "to": "",
       "locations": "all",
       "seconds": null
+    },
+    {
+      "id": "s-mwah9denouq7",
+      "src": "announcements/20261110091815-questions-about-islam.jpg",
+      "enabled": true,
+      "locations": "all",
+      "from": "",
+      "to": "",
+      "seconds": null
+    },
+    {
+      "id": "s-mwah9elbxjm8",
+      "src": "announcements/20261110091817-quran-classes.jpg",
+      "enabled": true,
+      "locations": "all",
+      "from": "",
+      "to": "",
+      "seconds": null
+    },
+    {
+      "id": "s-mwah9flzht5w",
+      "src": "announcements/20261110091818-silence-your-phone.jpg",
+      "enabled": true,
+      "locations": "all",
+      "from": "",
+      "to": "",
+      "seconds": null
     }
   ],
   "overrides": [
