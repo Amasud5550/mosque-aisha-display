@@ -12,7 +12,16 @@
     "from": "",
     "to": ""
   },
-  "ticker": [],
+  "ticker": [
+    {
+      "id": "t-mwah2x5ll6su",
+      "text": "Jummah Times Have Changed due to DST",
+      "enabled": true,
+      "locations": 1,
+      "from": "2026-11-10",
+      "to": "2026-11-12"
+    }
+  ],
   "slides": [
     {
       "id": "s-legacy-1",
