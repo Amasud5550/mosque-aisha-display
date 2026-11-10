@@ -3,7 +3,7 @@
   "locationId": 1,
   "slideSeconds": 15,
   "salahInProgressMin": 10,
-  "reloadToken": 0,
+  "reloadToken": 8,
   "alert": {
     "enabled": false,
     "title": "",
