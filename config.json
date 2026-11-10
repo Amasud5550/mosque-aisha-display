@@ -8,7 +8,9 @@
     "enabled": false,
     "title": "",
     "text": "",
-    "locations": "all"
+    "locations": "all",
+    "from": "",
+    "to": ""
   },
   "ticker": [],
   "slides": [
@@ -20,18 +22,19 @@
       "to": "",
       "locations": "all",
       "seconds": null
-    },
-    {
-      "id": "s-legacy-2",
-      "src": "CommunityIftar26.jpeg",
-      "enabled": false,
-      "from": "",
-      "to": "",
-      "locations": "all",
-      "seconds": null
     }
   ],
-  "overrides": [],
+  "overrides": [
+    {
+      "id": "o-mwafvuq8sb2q",
+      "prayer": "jumuah2",
+      "time": "13:40",
+      "locations": 1,
+      "from": "2026-11-10",
+      "to": "",
+      "note": ""
+    }
+  ],
   "nightDim": {
     "enabled": false,
     "afterIshaMin": 60,
