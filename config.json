@@ -2,7 +2,7 @@
   "version": 1,
   "locationId": 1,
   "slideSeconds": 15,
-  "salahInProgressMin": 10,
+  "salahInProgressMin": 15,
   "reloadToken": 9,
   "alert": {
     "enabled": false,
