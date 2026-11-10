@@ -25,21 +25,21 @@
         },
         {
           "name": "Jummah 1",
-          "time": "13:40:00",
+          "time": "12:40:00",
           "is_jummah": true,
           "jummah_order": 1,
           "start": "12:01"
         },
         {
           "name": "Jummah 2",
-          "time": "14:40:00",
+          "time": "13:40:00",
           "is_jummah": true,
           "jummah_order": 2,
           "start": "12:01"
         },
         {
           "name": "Asr",
-          "time": "15:15:00",
+          "time": "15:00:00",
           "is_jummah": false,
           "jummah_order": null,
           "start": "14:37"
@@ -111,10 +111,10 @@
   ],
   "fajr": "06:00:00",
   "dhuhr": "12:30:00",
-  "asr": "15:15:00",
+  "asr": "15:00:00",
   "maghrib": "16:58",
   "isha": "18:45:00",
-  "jumah1": "13:40:00",
-  "jumah2": "14:40:00",
-  "updatedAt": "2026-11-10T08:20:00Z"
+  "jumah1": "12:40:00",
+  "jumah2": "13:40:00",
+  "updatedAt": "2026-11-10T08:55:29Z"
 }
