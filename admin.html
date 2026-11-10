@@ -31,57 +31,65 @@
       --warn-soft: rgba(240, 184, 90, 0.14);
       --bad: #ff8a80;
       --bad-soft: rgba(255, 138, 128, 0.14);
-      --r: 14px;
+      --r: 12px;
       --serif: "Cinzel", Georgia, serif;
       --sans: "Raleway", "Segoe UI", system-ui, sans-serif;
+
+      /* Layout, tuned for 13–16" laptops */
+      --top-h: 56px;
+      --nav-w: 192px;
+      --prev-w: clamp(300px, 23vw, 380px);
+      --field-h: 36px;
     }
 
     * { box-sizing: border-box; }
-    html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.45; font-feature-settings: "lnum" 1; }
+    html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.45; font-feature-settings: "lnum" 1; }
     body { min-height: 100vh; }
     button, input, select, textarea { font: inherit; color: inherit; }
     a { color: var(--gold-2); }
     .hidden { display: none !important; }
+    kbd { font-family: var(--sans); font-size: 11px; font-weight: 700; padding: 1px 5px; border-radius: 4px; border: 1px solid currentColor; opacity: .7; }
 
     /* ---------- Buttons & fields ---------- */
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      height: 40px; padding: 0 16px; border-radius: 10px;
+      height: var(--field-h); padding: 0 14px; border-radius: 9px;
       border: 1px solid var(--line-2); background: var(--panel-2); color: var(--ink);
       font-weight: 600; cursor: pointer; white-space: nowrap; text-decoration: none;
       transition: background .15s, border-color .15s, opacity .15s;
     }
     .btn:hover { border-color: rgba(226,226,226,.32); }
+    .btn:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
     .btn:disabled { opacity: .45; cursor: not-allowed; }
     .btn.primary { background: var(--gold); border-color: var(--gold); color: #120c00; }
-    .btn.primary:hover { background: var(--gold-2); border-color: var(--gold-2); }
+    .btn.primary:hover:not(:disabled) { background: var(--gold-2); border-color: var(--gold-2); }
     .btn.danger { color: var(--bad); }
     .btn.ghost { background: transparent; }
-    .btn.sm { height: 32px; padding: 0 11px; font-size: 13px; border-radius: 8px; }
-    .btn.icon { width: 34px; padding: 0; height: 34px; }
+    .btn.sm { height: 30px; padding: 0 10px; font-size: 13px; border-radius: 8px; }
+    .btn.icon { width: 30px; padding: 0; height: 30px; }
     .btn svg { width: 16px; height: 16px; flex: none; }
 
-    label.f { display: flex; flex-direction: column; gap: 6px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); min-width: 0; }
+    label.f { display: flex; flex-direction: column; gap: 4px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); min-width: 0; }
     .in, select.in, textarea.in {
-      width: 100%; height: 40px; padding: 0 12px; border-radius: 10px;
+      width: 100%; height: var(--field-h); padding: 0 10px; border-radius: 9px;
       border: 1px solid var(--line-2); background: var(--field); color: var(--ink);
-      font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none;
+      font-size: 14px; font-weight: 500; letter-spacing: 0; text-transform: none;
       color-scheme: dark;
     }
-    textarea.in { height: auto; min-height: 84px; padding: 10px 12px; resize: vertical; }
+    textarea.in { height: auto; min-height: 64px; padding: 8px 10px; resize: vertical; }
     .in:focus { outline: 2px solid var(--gold); outline-offset: 1px; border-color: transparent; }
     .hint { font-size: 13px; color: var(--muted); }
 
-    .switch { position: relative; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--ink-2); user-select: none; }
+    .switch { position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--ink-2); user-select: none; white-space: nowrap; }
     .switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-    .switch .track { width: 42px; height: 24px; border-radius: 12px; background: #2a3550; position: relative; transition: background .15s; flex: none; }
-    .switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .15s; }
+    .switch .track { width: 36px; height: 20px; border-radius: 10px; background: #2a3550; position: relative; transition: background .15s; flex: none; }
+    .switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform .15s; }
     .switch input:checked + .track { background: var(--gold); }
-    .switch input:checked + .track::after { transform: translateX(18px); }
+    .switch input:checked + .track::after { transform: translateX(16px); }
     .switch input:focus-visible + .track { outline: 2px solid var(--gold-2); outline-offset: 2px; }
 
-    .chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; background: rgba(226,226,226,.08); color: var(--ink-2); }
-    .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; background: rgba(226,226,226,.08); color: var(--ink-2); }
+    .chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
     .chip.live { background: var(--ok-soft); color: var(--ok); }
     .chip.sched { background: var(--warn-soft); color: var(--warn); }
     .chip.off, .chip.ended { color: var(--muted); }
@@ -89,148 +97,201 @@
 
     /* ---------- Connect screen ---------- */
     .connect { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: radial-gradient(700px 400px at 50% -80px, rgba(173,128,24,.25), transparent 70%), var(--bg); }
-    .connect-card { width: 100%; max-width: 520px; background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 32px; }
-    .connect-card .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
-    .connect-card .brand img { width: 52px; height: 52px; object-fit: contain; }
-    .connect-card h1 { font-family: var(--serif); font-size: 24px; margin: 0; letter-spacing: .03em; }
+    .connect-card { width: 100%; max-width: 500px; background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 28px; }
+    .connect-card .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .connect-card .brand img { width: 48px; height: 48px; object-fit: contain; }
+    .connect-card h1 { font-family: var(--serif); font-size: 22px; margin: 0; letter-spacing: .03em; }
     .connect-card .sub { color: var(--muted); font-size: 14px; }
-    .connect-card form { display: grid; gap: 16px; }
-    .steps { margin: 0 0 20px; padding: 16px 18px 16px 36px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; color: var(--ink-2); font-size: 14px; }
-    .steps li { margin: 4px 0; }
+    .connect-card form { display: grid; gap: 14px; }
+    .steps { margin: 0 0 18px; padding: 14px 16px 14px 34px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 12px; color: var(--ink-2); font-size: 13.5px; }
+    .steps li { margin: 3px 0; }
     .steps b { color: var(--ink); }
     .err { color: var(--bad); font-weight: 600; font-size: 14px; min-height: 1em; }
 
     /* ---------- App shell ---------- */
-    .app { display: grid; grid-template-columns: 220px minmax(0, 1fr) 360px; grid-template-rows: 64px 1fr; min-height: 100vh; }
-    .top { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; padding: 0 20px; border-bottom: 1px solid var(--line); background: var(--bg-2); position: sticky; top: 0; z-index: 20; }
-    .top img { width: 36px; height: 36px; object-fit: contain; }
-    .top .title { font-family: var(--serif); font-weight: 700; font-size: 18px; letter-spacing: .04em; }
-    .top .repo { font-size: 13px; color: var(--muted); padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px; }
-    .top .spacer { flex: 1; }
+    .app { display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr) var(--prev-w); grid-template-rows: var(--top-h) 1fr; min-height: 100vh; }
+    body.no-preview .app { grid-template-columns: var(--nav-w) minmax(0, 1fr); }
+    body.no-preview .preview { display: none; }
 
-    .nav { border-right: 1px solid var(--line); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 64px; height: calc(100vh - 64px); }
-    .nav button { display: flex; align-items: center; gap: 12px; height: 42px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: var(--ink-2); font-weight: 600; cursor: pointer; text-align: left; }
+    .top { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding: 0 16px 0 18px; border-bottom: 1px solid var(--line); background: var(--bg-2); position: sticky; top: 0; z-index: 20; height: var(--top-h); }
+    .top img { width: 30px; height: 30px; object-fit: contain; }
+    .top .title { font-family: var(--serif); font-weight: 700; font-size: 16px; letter-spacing: .04em; white-space: nowrap; }
+    .top .repo { font-size: 12px; color: var(--muted); padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px; }
+    .top .spacer { flex: 1; }
+    .save-state { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    .save-state::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+    .save-state.dirty { color: var(--gold-2); }
+    .save-state.dirty::before { background: var(--gold-2); box-shadow: 0 0 0 4px var(--gold-soft); }
+    .save-state.busy::before { background: var(--warn); }
+    .top .btn kbd { margin-left: 2px; }
+
+    .nav { border-right: 1px solid var(--line); padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; position: sticky; top: var(--top-h); height: calc(100vh - var(--top-h)); overflow-y: auto; }
+    .nav button { position: relative; display: flex; align-items: center; gap: 11px; height: 38px; padding: 0 11px; border: 0; border-radius: 9px; background: transparent; color: var(--ink-2); font-weight: 600; cursor: pointer; text-align: left; white-space: nowrap; }
     .nav button svg { width: 18px; height: 18px; flex: none; opacity: .8; }
     .nav button:hover { background: rgba(226,226,226,.05); }
+    .nav button:focus-visible { outline: 2px solid var(--gold-2); outline-offset: -2px; }
     .nav button.on { background: var(--gold-soft); color: var(--gold-2); }
     .nav .mobile-only { display: none; }
-    .nav .badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--gold); color: #120c00; font-size: 11px; font-weight: 800; display: grid; place-items: center; }
+    .nav .badge { margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--gold); color: #120c00; font-size: 11px; font-weight: 800; display: grid; place-items: center; }
+    .nav .nav-foot { margin-top: auto; padding: 10px 6px 2px; font-size: 12px; color: var(--muted); line-height: 1.5; }
 
-    .main { padding: 28px 32px 120px; min-width: 0; }
-    .main h2 { font-family: var(--serif); font-size: 26px; margin: 0 0 4px; letter-spacing: .02em; }
-    .main .lead { color: var(--muted); margin: 0 0 24px; max-width: 680px; }
-    .section { margin-top: 30px; }
-    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-    .section-head h3 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: .02em; }
+    .main { padding: 22px 28px 64px; min-width: 0; container-type: inline-size; }
+    .main > .wrap { max-width: 1080px; }
+    .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+    .page-head > div { flex: 1 1 340px; }
+    .main h2 { font-family: var(--serif); font-size: 22px; margin: 0 0 2px; letter-spacing: .02em; }
+    .main .lead { color: var(--muted); margin: 0; max-width: 640px; font-size: 13.5px; }
+    .wrap > .lead { margin-bottom: 18px; }
+    .section { margin-top: 22px; }
+    .section:first-child { margin-top: 0; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .section-head h3 { margin: 0; font-size: 14px; font-weight: 800; letter-spacing: .03em; }
+    .section-head .tools { display: flex; gap: 8px; align-items: center; }
 
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
-    .stack { display: grid; gap: 12px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; }
+    .stack { display: grid; gap: 10px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .split { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+    .split > .section { margin-top: 0; }
+    @container (min-width: 820px) {
+      .split { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+    }
 
     /* Overview tiles */
-    .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
-    .tile { display: flex; flex-direction: column; gap: 10px; }
-    .tile .k { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-    .tile .v { font-size: 26px; font-weight: 700; line-height: 1.15; }
-    .tile .v small { font-size: 15px; font-weight: 600; color: var(--muted); }
-    .tile .actions { margin-top: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+    .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    .tile { display: flex; flex-direction: column; gap: 8px; }
+    .tile .k { font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .tile .v { font-size: 22px; font-weight: 700; line-height: 1.15; }
+    .tile .v small { font-size: 14px; font-weight: 600; color: var(--muted); }
+    .tile .actions { margin-top: auto; padding-top: 4px; display: flex; gap: 6px; flex-wrap: wrap; }
 
     /* Slides */
-    .drop { border: 2px dashed var(--line-2); border-radius: var(--r); padding: 22px; text-align: center; color: var(--muted); transition: border-color .15s, background .15s; }
+    .drop { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; border: 2px dashed var(--line-2); border-radius: var(--r); padding: 14px 16px; text-align: center; color: var(--muted); transition: border-color .15s, background .15s; }
     .drop.over { border-color: var(--gold-2); background: var(--gold-soft); color: var(--ink); }
     .drop strong { color: var(--ink); }
-    .slide { display: grid; grid-template-columns: 112px minmax(0, 1fr) auto; gap: 18px; align-items: start; }
-    .thumb { width: 112px; aspect-ratio: 3 / 4; border-radius: 10px; background: var(--field) center / contain no-repeat; border: 1px solid var(--line); }
-    .slide .name { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-weight: 700; margin-bottom: 14px; word-break: break-all; }
-    .slide .name .switch { margin-left: auto; }
-    .slide .fields { display: grid; grid-template-columns: minmax(150px, 1.3fr) minmax(140px, 1fr) minmax(140px, 1fr) 84px; gap: 10px; align-items: end; }
-    @media (max-width: 1320px) { .slide .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    .slide .acts { display: flex; flex-direction: column; gap: 6px; }
+    .slide { display: grid; grid-template-columns: 16px 60px minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px 14px 10px 8px; }
+    .handle { width: 16px; align-self: stretch; display: grid; place-items: center; color: var(--muted); cursor: grab; border-radius: 6px; }
+    .handle:hover { background: rgba(226,226,226,.06); color: var(--ink-2); }
+    .handle svg { width: 12px; height: 18px; }
+    .thumb { width: 60px; aspect-ratio: 3 / 4; border-radius: 8px; background: var(--field) center / contain no-repeat; border: 1px solid var(--line); }
+    .slide .head { display: flex; align-items: center; gap: 10px; min-width: 0; margin-bottom: 8px; }
+    .slide .head .fname { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+    .slide .head .grow { flex: 1; }
+    .slide .head .acts { display: flex; gap: 4px; }
+    .slide .fields { display: grid; grid-template-columns: minmax(130px, 1.2fr) minmax(128px, 1fr) minmax(128px, 1fr) 72px; gap: 8px; align-items: end; }
     .slide.is-off .thumb { opacity: .4; }
-    .empty { padding: 28px; text-align: center; color: var(--muted); border: 1px dashed var(--line-2); border-radius: var(--r); }
+    .slide.dragging { opacity: .45; }
+    .slide.drop-before { box-shadow: 0 -3px 0 0 var(--gold-2); }
+    .slide.drop-after { box-shadow: 0 3px 0 0 var(--gold-2); }
+    .empty { padding: 22px; text-align: center; color: var(--muted); border: 1px dashed var(--line-2); border-radius: var(--r); }
 
     /* Rows (ticker, overrides) */
-    .item { display: grid; gap: 12px; }
-    .item .top-row { display: flex; align-items: center; gap: 12px; justify-content: space-between; flex-wrap: wrap; }
-    .item .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; align-items: end; }
+    .item { display: grid; gap: 8px; padding: 12px 14px; }
+    .item .line { display: flex; align-items: center; gap: 10px; }
+    .item .line > .in { flex: 1; }
+    .item .fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-items: end; }
+    .item .fields.five { grid-template-columns: 1.1fr 1fr 1.2fr 1fr 1fr; }
 
     /* Prayer table */
-    .seg { display: inline-flex; padding: 4px; gap: 4px; background: var(--field); border: 1px solid var(--line); border-radius: 12px; flex-wrap: wrap; }
-    .seg button { height: 34px; padding: 0 14px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-2); font-weight: 700; cursor: pointer; }
+    .seg { display: inline-flex; padding: 3px; gap: 3px; background: var(--field); border: 1px solid var(--line); border-radius: 10px; flex-wrap: wrap; }
+    .seg button { height: 28px; padding: 0 12px; border: 0; border-radius: 7px; background: transparent; color: var(--ink-2); font-weight: 700; font-size: 13px; cursor: pointer; }
     .seg button.on { background: var(--gold); color: #120c00; }
     table.pt { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-    table.pt th { text-align: left; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 800; padding: 10px 12px; border-bottom: 1px solid var(--line); }
-    table.pt td { padding: 12px; border-bottom: 1px solid var(--line); font-weight: 600; }
+    table.pt th { text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 800; padding: 4px 10px 8px; border-bottom: 1px solid var(--line); }
+    table.pt td { padding: 8px 10px; border-bottom: 1px solid var(--line); font-weight: 600; }
     table.pt tr:last-child td { border-bottom: 0; }
-    table.pt td.num, table.pt th.num { text-align: right; }
+    table.pt td.num, table.pt th.num { text-align: right; white-space: nowrap; }
     table.pt .changed { color: var(--gold-2); }
-    table.pt .was { color: var(--muted); text-decoration: line-through; font-weight: 500; margin-right: 8px; }
+    table.pt .was { color: var(--muted); text-decoration: line-through; font-weight: 500; margin-right: 6px; }
 
-    .kv { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--ink-2); }
-    .url { display: flex; gap: 8px; align-items: center; }
-    .url code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 9px 12px; border-radius: 10px; background: var(--field); border: 1px solid var(--line); font-size: 13px; color: var(--ink-2); }
+    .kv { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; color: var(--ink-2); }
+    .url { display: flex; gap: 6px; align-items: center; }
+    .url code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 7px 10px; border-radius: 9px; background: var(--field); border: 1px solid var(--line); font-size: 13px; color: var(--ink-2); }
 
     input[type=range] { width: 100%; accent-color: var(--gold); }
 
     /* ---------- Preview ---------- */
-    .preview { border-left: 1px solid var(--line); padding: 20px; position: sticky; top: 64px; height: calc(100vh - 64px); display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
-    .preview .ph { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .preview .ph b { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .preview { border-left: 1px solid var(--line); padding: 14px 16px; position: sticky; top: var(--top-h); height: calc(100vh - var(--top-h)); display: flex; flex-direction: column; gap: 10px; overflow: hidden; background: var(--bg); }
+    .preview .ph { display: flex; align-items: center; gap: 8px; }
+    .preview .ph b { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-right: auto; }
+    .preview .ph select.in { width: auto; height: 30px; font-size: 13px; padding: 0 8px; }
     .frame { position: relative; flex: 1; min-height: 0; display: flex; align-items: flex-start; justify-content: center; }
-    .frame-box { position: relative; overflow: hidden; border-radius: 14px; border: 1px solid var(--line-2); box-shadow: 0 20px 60px -20px rgba(0,0,0,.7); background: #000; }
+    .frame-box { position: relative; overflow: hidden; border-radius: 12px; border: 1px solid var(--line-2); box-shadow: 0 20px 60px -20px rgba(0,0,0,.7); background: #000; }
     .frame iframe { position: absolute; top: 0; left: 0; width: 1080px; height: 1920px; border: 0; transform-origin: 0 0; pointer-events: none; }
     .preview .note { font-size: 12px; color: var(--muted); text-align: center; }
 
-    /* ---------- Save bar & toast ---------- */
-    .savebar { position: fixed; left: 50%; bottom: 20px; transform: translate(-50%, 140%); z-index: 40; display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 18px; border-radius: 14px; background: var(--panel-2); border: 1px solid var(--gold); box-shadow: 0 18px 50px -12px rgba(0,0,0,.8); transition: transform .25s ease; max-width: calc(100vw - 32px); }
-    .savebar.show { transform: translate(-50%, 0); }
-    .savebar span { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .toast { position: fixed; top: 76px; left: 50%; transform: translate(-50%, -20px); opacity: 0; z-index: 60; padding: 12px 18px; border-radius: 12px; background: var(--panel-2); border: 1px solid var(--line-2); font-weight: 600; box-shadow: 0 18px 40px -12px rgba(0,0,0,.8); transition: opacity .2s, transform .2s; pointer-events: none; max-width: calc(100vw - 32px); }
+    /* ---------- Save bar (phones only) & toast ---------- */
+    .savebar { display: none; }
+    .toast { position: fixed; top: calc(var(--top-h) + 12px); left: 50%; transform: translate(-50%, -12px); opacity: 0; z-index: 60; padding: 10px 16px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line-2); font-weight: 600; box-shadow: 0 18px 40px -12px rgba(0,0,0,.8); transition: opacity .2s, transform .2s; pointer-events: none; max-width: calc(100vw - 32px); }
     .toast.show { opacity: 1; transform: translate(-50%, 0); }
     .toast.ok { border-color: rgba(127,207,154,.5); }
     .toast.bad { border-color: rgba(255,138,128,.6); color: var(--bad); }
 
     /* ---------- Library dialog ---------- */
-    dialog { width: min(900px, calc(100vw - 32px)); max-height: calc(100vh - 64px); padding: 0; border-radius: 18px; border: 1px solid var(--line-2); background: var(--panel); color: var(--ink); }
+    dialog { width: min(980px, calc(100vw - 48px)); max-height: calc(100vh - 64px); padding: 0; border-radius: 16px; border: 1px solid var(--line-2); background: var(--panel); color: var(--ink); }
     dialog::backdrop { background: rgba(3,6,14,.75); }
-    .dlg-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel); z-index: 1; }
-    .dlg-head h3 { margin: 0; font-size: 18px; }
-    .lib { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; padding: 20px; }
-    .lib .card { padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+    .dlg-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel); z-index: 1; }
+    .dlg-head h3 { margin: 0; font-size: 16px; }
+    .lib { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 16px 18px 18px; }
+    .lib .card { padding: 8px; display: flex; flex-direction: column; gap: 8px; }
     .lib .thumb { width: 100%; }
     .lib .fn { font-size: 12px; color: var(--ink-2); word-break: break-all; line-height: 1.3; }
     .lib .row { display: flex; gap: 6px; margin-top: auto; }
     .lib .row .btn { flex: 1; }
 
     /* ---------- Responsive ---------- */
-    @media (max-width: 1180px) {
-      .app { grid-template-columns: 200px minmax(0, 1fr); }
-      .preview { display: none; }
-      .nav .mobile-only { display: flex; }
-      body.tab-preview .preview { display: flex; grid-column: 2; grid-row: 2; position: static; height: auto; min-height: calc(100vh - 64px); border-left: 0; }
-      body.tab-preview .main { display: none; }
+    /* Smaller laptops (1280–1366): sidebar becomes an icon rail */
+    @media (max-width: 1366px) {
+      :root { --nav-w: 64px; }
+      .nav { padding: 12px 8px; align-items: center; }
+      .nav button { width: 46px; height: 42px; padding: 0; justify-content: center; }
+      .nav button .lbl, .nav .nav-foot { display: none; }
+      .nav .badge { position: absolute; top: 3px; right: 2px; min-width: 16px; height: 16px; font-size: 10px; }
+      .top .repo { display: none; }
     }
 
+    /* Narrow windows: preview moves to its own tab */
+    @media (max-width: 1100px) {
+      .app, body.no-preview .app { grid-template-columns: var(--nav-w) minmax(0, 1fr); }
+      .preview, body.no-preview .preview { display: none; }
+      #previewToggle { display: none; }
+      .nav .mobile-only { display: flex; }
+      body.tab-preview .preview { display: flex; grid-column: 2; grid-row: 2; position: static; height: auto; min-height: calc(100vh - var(--top-h)); border-left: 0; }
+      body.tab-preview .main { display: none; }
+      .slide .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @container (max-width: 640px) {
+      .slide .fields, .item .fields, .item .fields.five { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    /* Phones */
     @media (max-width: 760px) {
-      .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: 56px auto 1fr; }
-      .top { height: 56px; padding: 0 16px; gap: 10px; }
-      .top .repo { display: none; }
-      .top .title { font-size: 16px; }
-      .nav { position: sticky; top: 56px; z-index: 15; height: auto; flex-direction: row; overflow-x: auto; padding: 8px 12px; gap: 6px; border-right: 0; border-bottom: 1px solid var(--line); background: var(--bg); scrollbar-width: none; }
-      .nav button { flex: none; height: 36px; padding: 0 12px; }
+      :root { --top-h: 52px; --field-h: 40px; }
+      html, body { font-size: 15px; }
+      .app { grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: var(--top-h) auto 1fr; }
+      .top { padding: 0 12px; gap: 10px; }
+      .top .title { font-size: 15px; }
+      .top .save-state, #discardTop, #previewToggle, .top kbd { display: none; }
+      .nav { position: sticky; top: var(--top-h); z-index: 15; height: auto; flex-direction: row; overflow-x: auto; padding: 8px 12px; gap: 6px; border-right: 0; border-bottom: 1px solid var(--line); background: var(--bg); scrollbar-width: none; }
+      .nav button, .nav button.mobile-only { width: auto; flex: none; height: 34px; padding: 0 12px; }
+      .nav button .lbl { display: inline; }
       .nav button svg { display: none; }
-      .main { padding: 20px 16px 120px; }
+      .nav .badge { position: static; }
+      .main { padding: 18px 16px 110px; }
       body.tab-preview .preview { grid-column: 1; grid-row: 3; padding: 16px; min-height: 70vh; }
-      .grid-2 { grid-template-columns: minmax(0, 1fr); }
-      .slide { grid-template-columns: 72px minmax(0, 1fr); }
-      .slide .thumb { width: 72px; }
-      .slide .fields { grid-template-columns: minmax(0, 1fr); }
-      .slide .acts { grid-column: 1 / -1; flex-direction: row; justify-content: flex-end; }
+      .grid-2, .grid-3 { grid-template-columns: minmax(0, 1fr); }
+      .slide { grid-template-columns: 52px minmax(0, 1fr); padding: 12px; }
+      .handle, .drag-hint { display: none; }
+      .slide { align-items: start; }
+      .thumb, .slide .thumb { width: 52px; }
+      .slide .head { flex-wrap: wrap; }
+      .slide .fields, .item .fields, .item .fields.five { grid-template-columns: minmax(0, 1fr); }
       .connect-card { padding: 22px; }
-      .savebar { left: 16px; right: 16px; transform: translateY(140%); }
+      .savebar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 40; display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 16px; border-radius: 14px; background: var(--panel-2); border: 1px solid var(--gold); box-shadow: 0 18px 50px -12px rgba(0,0,0,.8); transform: translateY(160%); transition: transform .25s ease; }
       .savebar.show { transform: translateY(0); }
-      .savebar span { flex: 1; font-size: 14px; }
+      .savebar span { flex: 1; font-weight: 600; font-size: 14px; }
     }
   </style>
 </head>
@@ -276,24 +337,29 @@
       <div class="title">Display Admin</div>
       <div class="repo" id="repoPill"></div>
       <div class="spacer"></div>
-      <button class="btn primary" id="publishTop" disabled>Publish</button>
+      <div class="save-state" id="saveState">All changes published</div>
+      <button class="btn ghost sm" id="discardTop" disabled>Discard</button>
+      <button class="btn primary" id="publishTop" disabled title="Publish (⌘S / Ctrl+S)">Publish <kbd id="kbdHint">⌘S</kbd></button>
+      <button class="btn sm ghost" id="previewToggle" title="Show or hide the preview">Hide preview</button>
     </header>
 
     <nav class="nav" id="nav">
-      <button data-tab="overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Overview</button>
-      <button data-tab="slides"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>Slides <span class="badge hidden" id="slideBadge"></span></button>
-      <button data-tab="notices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10v4a1 1 0 0 0 1 1h3l5 4V5L8 9H5a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg>Notices</button>
-      <button data-tab="prayers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Prayer times</button>
-      <button data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
-      <button data-tab="preview" class="mobile-only"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/></svg>Preview</button>
+      <button data-tab="overview" title="Overview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg><span class="lbl">Overview</span></button>
+      <button data-tab="slides" title="Slides"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg><span class="lbl">Slides</span> <span class="badge hidden" id="slideBadge"></span></button>
+      <button data-tab="notices" title="Notices"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10v4a1 1 0 0 0 1 1h3l5 4V5L8 9H5a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6"/></svg><span class="lbl">Notices</span></button>
+      <button data-tab="prayers" title="Prayer times"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span class="lbl">Prayer times</span></button>
+      <button data-tab="settings" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="lbl">Settings</span></button>
+      <button data-tab="preview" class="mobile-only" title="Preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="2" width="12" height="20" rx="2"/></svg><span class="lbl">Preview</span></button>
+      <div class="nav-foot"><kbd class="kbd-mod">⌘</kbd> <kbd>S</kbd> publishes<br />Drag slides to reorder</div>
     </nav>
 
     <main class="main" id="view"></main>
 
     <aside class="preview" id="preview">
       <div class="ph">
-        <b>Live preview</b>
-        <select class="in" id="previewLoc" style="width:auto;height:34px;font-size:13px"></select>
+        <b>Preview</b>
+        <select class="in" id="previewLoc" title="Which mosque to preview"></select>
+        <a class="btn sm ghost" id="previewOpen" target="_blank" rel="noopener" title="Open the published screen in a new tab">Open ↗</a>
       </div>
       <div class="frame" id="frame"><div class="frame-box" id="frameBox"><iframe id="previewFrame" title="Screen preview" tabindex="-1"></iframe></div></div>
       <div class="note">Shows your unpublished changes</div>
@@ -570,8 +636,13 @@
       const d = dirty();
       $("savebar").classList.toggle("show", d);
       $("publishTop").disabled = !d || S.busy;
+      $("discardTop").disabled = !d || S.busy;
       $("publishBtn").disabled = S.busy;
       $("discardBtn").disabled = S.busy;
+      const st = $("saveState");
+      st.className = `save-state${S.busy ? " busy" : d ? " dirty" : ""}`;
+      st.textContent = S.busy ? "Publishing…" : d ? "Unpublished changes" : "All changes published";
+      document.title = `${d ? "• " : ""}Display Admin · Mosque Aisha`;
       const live = S.draft.slides.filter((s) => status(s).cls === "live").length;
       const badge = $("slideBadge");
       badge.textContent = live;
@@ -699,38 +770,52 @@
         const cards = c.slides.map((s, i) => {
           const st = status(s);
           return `
-            <div class="card slide ${st.cls === "off" ? "is-off" : ""}">
+            <div class="card slide ${st.cls === "off" ? "is-off" : ""}" data-slide="${i}">
+              <div class="handle" title="Drag to reorder" aria-hidden="true"><svg viewBox="0 0 12 18" fill="currentColor"><circle cx="3" cy="3" r="1.5"/><circle cx="9" cy="3" r="1.5"/><circle cx="3" cy="9" r="1.5"/><circle cx="9" cy="9" r="1.5"/><circle cx="3" cy="15" r="1.5"/><circle cx="9" cy="15" r="1.5"/></svg></div>
               <div class="thumb" style="background-image:url('${esc(rawUrl(s.src))}')"></div>
-              <div>
-                <div class="name">${esc(fileName(s.src))} ${chip(st)} ${toggle(`slides.${i}.enabled`, s.enabled !== false, "Show")}</div>
+              <div style="min-width:0">
+                <div class="head">
+                  <span class="fname" title="${esc(s.src)}">${esc(fileName(s.src))}</span>
+                  ${chip(st)}
+                  <span class="grow"></span>
+                  ${toggle(`slides.${i}.enabled`, s.enabled !== false, "Show")}
+                  <span class="acts">
+                    <button class="btn icon sm" title="Move up" aria-label="Move up" data-act="move" data-list="slides" data-i="${i}" data-d="-1" ${i === 0 ? "disabled" : ""}>↑</button>
+                    <button class="btn icon sm" title="Move down" aria-label="Move down" data-act="move" data-list="slides" data-i="${i}" data-d="1" ${i === c.slides.length - 1 ? "disabled" : ""}>↓</button>
+                    <button class="btn icon sm danger" title="Remove from rotation" aria-label="Remove" data-act="remove" data-list="slides" data-i="${i}">✕</button>
+                  </span>
+                </div>
                 <div class="fields">
                   ${locSelect(`slides.${i}.locations`, s.locations)}
                   ${dateField(`slides.${i}.from`, s.from, "From")}
                   ${dateField(`slides.${i}.to`, s.to, "Until")}
-                  <label class="f">Seconds<input class="in" type="number" min="3" max="300" placeholder="${c.slideSeconds || 15}" data-bind="slides.${i}.seconds" value="${s.seconds ?? ""}" /></label>
+                  <label class="f">Secs<input class="in" type="number" min="3" max="300" placeholder="${c.slideSeconds || 15}" data-bind="slides.${i}.seconds" value="${s.seconds ?? ""}" /></label>
                 </div>
-              </div>
-              <div class="acts">
-                <button class="btn icon sm" title="Move up" data-act="move" data-list="slides" data-i="${i}" data-d="-1" ${i === 0 ? "disabled" : ""}>↑</button>
-                <button class="btn icon sm" title="Move down" data-act="move" data-list="slides" data-i="${i}" data-d="1" ${i === c.slides.length - 1 ? "disabled" : ""}>↓</button>
-                <button class="btn icon sm danger" title="Remove from rotation" data-act="remove" data-list="slides" data-i="${i}">✕</button>
               </div>
             </div>`;
         }).join("");
 
+        const live = c.slides.filter((s) => status(s).cls === "live").length;
         return `
-          <h2>Slides</h2>
-          <p class="lead">Images rotate in the bottom half of the screen, top to bottom. Use dates to schedule posters, like an event that should come down after it happens.</p>
-
-          <div class="drop" id="drop">
-            <strong>Drop images here</strong> or
-            <button class="btn sm" data-act="upload" style="margin:0 6px">Choose files</button>
-            <button class="btn sm ghost" data-act="library">Pick from library</button>
-            <div class="hint" style="margin-top:8px">Big photos are shrunk automatically. Portrait posters fit best.</div>
+          <div class="page-head">
+            <div>
+              <h2>Slides</h2>
+              <p class="lead">Rotate in the bottom half of the screen, in this order. Use dates so event posters come down by themselves.</p>
+            </div>
           </div>
 
-          <div class="section stack">
-            ${cards || `<div class="empty">No slides yet. Upload a poster or pick one from the library.</div>`}
+          <div class="drop" id="drop">
+            <strong>Drop images here</strong><span>or</span>
+            <button class="btn sm primary" data-act="upload">Upload images</button>
+            <button class="btn sm" data-act="library">Pick from library</button>
+            <span class="hint">· big photos are shrunk automatically</span>
+          </div>
+
+          <div class="section">
+            <div class="section-head"><h3>${c.slides.length} in rotation · ${live} showing now</h3><span class="hint drag-hint">Drag ⠿ to reorder</span></div>
+            <div class="stack" id="slideList">
+              ${cards || `<div class="empty">No slides yet. Upload a poster or pick one from the library.</div>`}
+            </div>
           </div>`;
       },
 
@@ -739,36 +824,46 @@
         const t = S.draft.ticker;
         const aSt = a.enabled ? status({ ...a, enabled: true }) : { cls: "off", text: "Off" };
         return `
-          <h2>Notices</h2>
-          <p class="lead">Short messages scroll along the bottom of the screen. An urgent notice takes over the slide area, for things like closures or a janazah.</p>
-
-          <div class="section">
-            <div class="section-head"><h3>Urgent notice</h3>${chip(aSt)}</div>
-            <div class="card stack">
-              ${toggle("alert.enabled", a.enabled, "Show urgent notice")}
-              <label class="f">Heading<input class="in" type="text" maxlength="60" data-bind="alert.title" value="${esc(a.title)}" placeholder="Fajr cancelled due to snow" /></label>
-              <label class="f">Details<textarea class="in" maxlength="280" data-bind="alert.text" placeholder="Please pray at home. Dhuhr will go ahead as normal.">${esc(a.text)}</textarea></label>
-              <div class="grid-4">
-                ${locSelect("alert.locations", a.locations)}
-                ${dateField("alert.from", a.from, "From")}
-                ${dateField("alert.to", a.to, "Until")}
-              </div>
+          <div class="page-head">
+            <div>
+              <h2>Notices</h2>
+              <p class="lead">Messages scroll along the bottom of the screen. An urgent notice takes over the slide area, for closures or a janazah.</p>
             </div>
           </div>
 
-          <div class="section">
-            <div class="section-head"><h3>Scrolling messages</h3><button class="btn sm" data-act="add-ticker">+ Add message</button></div>
-            <div class="stack">
-              ${t.length ? t.map((m, i) => `
-                <div class="card item">
-                  <div class="top-row">${toggle(`ticker.${i}.enabled`, m.enabled !== false, "Show")} <div style="display:flex;gap:8px;align-items:center">${chip(status(m))}<button class="btn icon sm danger" title="Delete" data-act="remove" data-list="ticker" data-i="${i}">✕</button></div></div>
-                  <input class="in" type="text" maxlength="200" data-bind="ticker.${i}.text" value="${esc(m.text)}" placeholder="Halaqa this Friday after Maghrib, everyone welcome" />
-                  <div class="fields">
-                    ${locSelect(`ticker.${i}.locations`, m.locations)}
-                    ${dateField(`ticker.${i}.from`, m.from, "From")}
-                    ${dateField(`ticker.${i}.to`, m.to, "Until")}
-                  </div>
-                </div>`).join("") : `<div class="empty">No messages. The bar is hidden on the screen until you add one.</div>`}
+          <div>
+            <div class="section">
+              <div class="section-head"><h3>Scrolling messages</h3><button class="btn sm" data-act="add-ticker">+ Add message</button></div>
+              <div class="stack">
+                ${t.length ? t.map((m, i) => `
+                  <div class="card item">
+                    <div class="line">
+                      ${toggle(`ticker.${i}.enabled`, m.enabled !== false, "")}
+                      <input class="in" type="text" maxlength="200" data-bind="ticker.${i}.text" value="${esc(m.text)}" placeholder="Halaqa this Friday after Maghrib, everyone welcome" aria-label="Message" />
+                      <button class="btn icon sm danger" title="Delete message" aria-label="Delete" data-act="remove" data-list="ticker" data-i="${i}">✕</button>
+                    </div>
+                    <div class="fields">
+                      ${locSelect(`ticker.${i}.locations`, m.locations)}
+                      ${dateField(`ticker.${i}.from`, m.from, "From")}
+                      ${dateField(`ticker.${i}.to`, m.to, "Until")}
+                    </div>
+                    <div>${chip(status(m))}</div>
+                  </div>`).join("") : `<div class="empty">No messages. The bar is hidden on the screen until you add one.</div>`}
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-head"><h3>Urgent notice</h3>${chip(aSt)}</div>
+              <div class="card stack">
+                ${toggle("alert.enabled", a.enabled, "Show urgent notice")}
+                <label class="f">Heading<input class="in" type="text" maxlength="60" data-bind="alert.title" value="${esc(a.title)}" placeholder="Fajr cancelled due to snow" /></label>
+                <label class="f">Details<textarea class="in" maxlength="280" data-bind="alert.text" placeholder="Please pray at home. Dhuhr will go ahead as normal.">${esc(a.text)}</textarea></label>
+                <div class="grid-3">
+                  ${locSelect("alert.locations", a.locations)}
+                  ${dateField("alert.from", a.from, "From")}
+                  ${dateField("alert.to", a.to, "Until")}
+                </div>
+              </div>
             </div>
           </div>`;
       },
@@ -808,39 +903,45 @@
            <span class="hint">${esc(ago(run.created_at))}</span> <a class="hint" href="${esc(run.html_url)}" target="_blank" rel="noopener">details</a>`;
 
         return `
-          <h2>Prayer times</h2>
-          <p class="lead">Times come from mosqueaisha.ca automatically. Change them permanently in the mosque website's own admin. To change a time on the screens only, add a time change below.</p>
-
-          <div class="section">
-            <div class="section-head">
-              <div class="seg">${locs.map((l) => `<button data-act="prayer-loc" data-id="${l.id}" class="${+l.id === +S.prayerLoc ? "on" : ""}">${esc(locShort(l.id))}</button>`).join("")}</div>
-              <button class="btn sm" data-act="refresh-prayers">Refresh from mosqueaisha.ca</button>
+          <div class="page-head">
+            <div>
+              <h2>Prayer times</h2>
+              <p class="lead">Copied from mosqueaisha.ca automatically. To change a time on the screens only, add a time change.</p>
             </div>
-            <div class="card">
-              ${loc ? `<table class="pt"><thead><tr><th>Prayer</th><th class="num">Adhan</th><th class="num">Iqamah on screen</th></tr></thead><tbody>${rows}</tbody></table>`
-                    : `<div class="empty">No times saved yet. Press “Refresh from mosqueaisha.ca”.</div>`}
-              <div class="kv" style="margin-top:14px">
-                ${pt ? (pt.day === d ? `<span class="chip live">Today's times</span>` : `<span class="chip sched">From ${esc(prettyDate(pt.day))}</span>`) : ""}
-                ${runLine}
-              </div>
-            </div>
+            <button class="btn sm" data-act="refresh-prayers">Refresh from mosqueaisha.ca</button>
           </div>
 
-          <div class="section">
-            <div class="section-head"><h3>Time changes</h3><button class="btn sm" data-act="add-override">+ Change a time</button></div>
-            <div class="stack">
-              ${S.draft.overrides.length ? S.draft.overrides.map((o, i) => `
-                <div class="card item">
-                  <div class="top-row"><strong>${esc(PRAYER_IDS.find(([k]) => k === o.prayer)?.[1] || o.prayer)} → ${esc(to12(o.time))}</strong> <div style="display:flex;gap:8px;align-items:center">${chip(status(o))}<button class="btn icon sm danger" title="Delete" data-act="remove" data-list="overrides" data-i="${i}">✕</button></div></div>
-                  <div class="fields">
-                    <label class="f">Prayer<select class="in" data-bind="overrides.${i}.prayer">${PRAYER_IDS.map(([k, n]) => `<option value="${k}" ${o.prayer === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>
-                    <label class="f">Iqamah time<input class="in" type="time" data-bind="overrides.${i}.time" value="${esc(o.time)}" /></label>
-                    ${locSelect(`overrides.${i}.locations`, o.locations, "Location")}
-                    ${dateField(`overrides.${i}.from`, o.from, "From")}
-                    ${dateField(`overrides.${i}.to`, o.to, "Until")}
-                  </div>
-                  <input class="in" type="text" maxlength="120" data-bind="overrides.${i}.note" value="${esc(o.note || "")}" placeholder="Note for other admins (optional), e.g. Ramadan Isha" />
-                </div>`).join("") : `<div class="empty">No changes. The screens show exactly what mosqueaisha.ca has.</div>`}
+          <div class="split">
+            <div class="section">
+              <div class="section-head">
+                <div class="seg">${locs.map((l) => `<button data-act="prayer-loc" data-id="${l.id}" class="${+l.id === +S.prayerLoc ? "on" : ""}">${esc(locShort(l.id))}</button>`).join("")}</div>
+                ${pt ? (pt.day === d ? `<span class="chip live">Today's times</span>` : `<span class="chip sched">From ${esc(prettyDate(pt.day))}</span>`) : ""}
+              </div>
+              <div class="card">
+                ${loc ? `<table class="pt"><thead><tr><th>Prayer</th><th class="num">Adhan</th><th class="num">Iqamah on screen</th></tr></thead><tbody>${rows}</tbody></table>`
+                      : `<div class="empty">No times saved yet. Press “Refresh from mosqueaisha.ca”.</div>`}
+                <div class="kv" style="margin-top:10px">${runLine}</div>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="section-head"><h3>Time changes</h3><button class="btn sm" data-act="add-override">+ Change a time</button></div>
+              <div class="stack">
+                ${S.draft.overrides.length ? S.draft.overrides.map((o, i) => `
+                  <div class="card item">
+                    <div class="line"><strong style="flex:1">${esc(PRAYER_IDS.find(([k]) => k === o.prayer)?.[1] || o.prayer)} → ${esc(to12(o.time))}</strong>${chip(status(o))}<button class="btn icon sm danger" title="Delete time change" aria-label="Delete" data-act="remove" data-list="overrides" data-i="${i}">✕</button></div>
+                    <div class="fields">
+                      <label class="f">Prayer<select class="in" data-bind="overrides.${i}.prayer">${PRAYER_IDS.map(([k, n]) => `<option value="${k}" ${o.prayer === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+                      <label class="f">Iqamah time<input class="in" type="time" data-bind="overrides.${i}.time" value="${esc(o.time)}" /></label>
+                      ${locSelect(`overrides.${i}.locations`, o.locations, "Location")}
+                    </div>
+                    <div class="fields">
+                      ${dateField(`overrides.${i}.from`, o.from, "From")}
+                      ${dateField(`overrides.${i}.to`, o.to, "Until")}
+                      <label class="f">Note<input class="in" type="text" maxlength="120" data-bind="overrides.${i}.note" value="${esc(o.note || "")}" placeholder="e.g. Ramadan" /></label>
+                    </div>
+                  </div>`).join("") : `<div class="empty">No changes. The screens show exactly what mosqueaisha.ca has.</div>`}
+              </div>
             </div>
           </div>`;
       },
@@ -909,7 +1010,7 @@
       document.body.classList.toggle("tab-preview", S.tab === "preview");
       document.querySelectorAll("#nav button").forEach((b) => b.classList.toggle("on", b.dataset.tab === S.tab));
       const y = window.scrollY;
-      $("view").innerHTML = views[S.tab]();
+      $("view").innerHTML = `<div class="wrap">${views[S.tab]()}</div>`;
       window.scrollTo(0, y);
       bindDrop();
       if (S.tab === "preview") fitPreview();
@@ -988,12 +1089,87 @@
       }
     });
 
-    $("publishTop").addEventListener("click", () => publish());
-    $("publishBtn").addEventListener("click", () => publish());
-    $("discardBtn").addEventListener("click", () => {
+    const discard = () => {
+      if (!dirty()) return;
       S.draft = clone(S.saved);
       changed({ rerender: true });
       toast("Changes discarded");
+    };
+    $("publishTop").addEventListener("click", () => publish());
+    $("publishBtn").addEventListener("click", () => publish());
+    $("discardTop").addEventListener("click", discard);
+    $("discardBtn").addEventListener("click", discard);
+
+    // ⌘S / Ctrl+S publishes
+    const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    if (!IS_MAC) {
+      $("kbdHint").textContent = "Ctrl+S";
+      document.querySelectorAll(".kbd-mod").forEach((k) => (k.textContent = "Ctrl"));
+      $("publishTop").title = "Publish (Ctrl+S)";
+    }
+    document.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
+        if ($("app").classList.contains("hidden")) return;
+        e.preventDefault();
+        // commit a value that's still being typed
+        if (document.activeElement?.dataset?.bind) document.activeElement.dispatchEvent(new Event("change", { bubbles: true }));
+        if (dirty()) publish(); else toast("Nothing to publish");
+      }
+    });
+
+    /* ---------- Show / hide the preview column ---------- */
+    const PREVIEW_KEY = "mosque-aisha-admin:preview";
+    function setPreviewVisible(on) {
+      document.body.classList.toggle("no-preview", !on);
+      $("previewToggle").textContent = on ? "Hide preview" : "Show preview";
+      try { localStorage.setItem(PREVIEW_KEY, on ? "1" : "0"); } catch {}
+      requestAnimationFrame(fitPreview);
+    }
+    $("previewToggle").addEventListener("click", () => setPreviewVisible(document.body.classList.contains("no-preview")));
+    try { if (localStorage.getItem(PREVIEW_KEY) === "0") setPreviewVisible(false); } catch {}
+
+    /* ---------- Drag slides to reorder ---------- */
+    let dragFrom = null;
+    $("view").addEventListener("pointerdown", (e) => {
+      const handle = e.target.closest(".handle");
+      const card = handle?.closest("[data-slide]");
+      if (card) card.draggable = true;
+    });
+    $("view").addEventListener("dragstart", (e) => {
+      const card = e.target.closest?.("[data-slide]");
+      if (!card || !card.draggable) return;
+      dragFrom = +card.dataset.slide;
+      card.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", String(dragFrom));
+    });
+    $("view").addEventListener("dragover", (e) => {
+      if (dragFrom === null) return;
+      const card = e.target.closest("[data-slide]");
+      if (!card) return;
+      e.preventDefault();
+      const r = card.getBoundingClientRect();
+      const after = e.clientY > r.top + r.height / 2;
+      document.querySelectorAll(".drop-before, .drop-after").forEach((c) => c.classList.remove("drop-before", "drop-after"));
+      card.classList.add(after ? "drop-after" : "drop-before");
+    });
+    $("view").addEventListener("drop", (e) => {
+      if (dragFrom === null) return;
+      const card = e.target.closest("[data-slide]");
+      if (!card) return;
+      e.preventDefault();
+      const r = card.getBoundingClientRect();
+      let to = +card.dataset.slide + (e.clientY > r.top + r.height / 2 ? 1 : 0);
+      const list = S.draft.slides;
+      const [moved] = list.splice(dragFrom, 1);
+      if (to > dragFrom) to--;
+      list.splice(to, 0, moved);
+      dragFrom = null;
+      changed({ rerender: true });
+    });
+    $("view").addEventListener("dragend", () => {
+      dragFrom = null;
+      document.querySelectorAll("[data-slide]").forEach((c) => { c.draggable = false; c.classList.remove("dragging", "drop-before", "drop-after"); });
     });
 
     window.addEventListener("beforeunload", (e) => {
@@ -1160,6 +1336,7 @@
     function loadPreview() {
       previewReady = false;
       $("previewFrame").src = previewSrc();
+      $("previewOpen").href = screenUrl(S.previewLoc || S.draft.locationId || 1);
     }
 
     function pushPreview() {
