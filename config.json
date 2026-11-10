@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "locationId": 1,
+  "slideSeconds": 15,
+  "salahInProgressMin": 10,
+  "reloadToken": 0,
+  "alert": {
+    "enabled": false,
+    "title": "",
+    "text": "",
+    "locations": "all"
+  },
+  "ticker": [],
+  "slides": [
+    {
+      "id": "s-legacy-1",
+      "src": "WhatsApp Image 2025-04-20 at 20.45.41.jpeg",
+      "enabled": true,
+      "from": "",
+      "to": "",
+      "locations": "all",
+      "seconds": null
+    },
+    {
+      "id": "s-legacy-2",
+      "src": "CommunityIftar26.jpeg",
+      "enabled": false,
+      "from": "",
+      "to": "",
+      "locations": "all",
+      "seconds": null
+    }
+  ],
+  "overrides": [],
+  "nightDim": {
+    "enabled": false,
+    "afterIshaMin": 60,
+    "beforeFajrMin": 30,
+    "level": 0.65
+  }
+}

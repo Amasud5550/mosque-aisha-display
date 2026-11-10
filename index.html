@@ -2,642 +2,1171 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=1080, height=1920, initial-scale=1.0" />
+  <meta name="viewport" content="width=1080, initial-scale=1.0" />
   <title>Mosque Aisha Display</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@500;600;700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg: #031a33;
-      --panel: rgba(255, 255, 255, 0.08);
-      --text: #ffffff;
-      --muted: #d7e4f2;
-      --accent: #ffd166;
-      --line: rgba(255, 255, 255, 0.12);
-      --green: #7ef29a;
-      --error: #ff8a8a;
+      --navy-900: #070d1c;
+      --navy-800: #0d1629;
+      --navy-700: #142039;
+      --gold: #ad8018;
+      --gold-bright: #d9a83a;
+      --gold-soft: rgba(173, 128, 24, 0.14);
+      --ink: #f1ede4;
+      --ink-dim: #e2e2e2;
+      --muted: rgba(226, 226, 226, 0.58);
+      --faint: rgba(226, 226, 226, 0.32);
+      --line: rgba(226, 226, 226, 0.09);
+      --ok: #7fcf9a;
+      --warn: #f0b85a;
 
-      --font-xl: 72px;
-      --font-lg: 44px;
-      --font-md: 34px;
-      --font-sm: 28px;
-      --font-xs: 22px;
+      --serif: "Cinzel", "Times New Roman", serif;
+      --sans: "Raleway", "Segoe UI", Arial, sans-serif;
+      --arabic: "Amiri", "Traditional Arabic", serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
-      margin: 0;
-      padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #021428, #062346);
-      color: var(--text);
+      background: var(--navy-900);
+      color: var(--ink);
+      font-family: var(--sans);
+      cursor: none;
+      -webkit-font-smoothing: antialiased;
     }
 
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    /* Raleway defaults to old-style figures; force lining, fixed-width digits everywhere */
+    body { font-feature-settings: "lnum" 1, "tnum" 1; }
+
+    /* Fixed 1080x1920 canvas, scaled to whatever screen it lands on */
+    .stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1080px;
+      height: 1920px;
+      transform: translate(-50%, -50%);
+      transform-origin: center center;
     }
 
     .screen {
-      width: 1080px;
-      height: 1920px;
-      padding: 40px 50px;
-      display: grid;
-      grid-template-rows: auto auto auto auto 1fr auto;
-      gap: 24px;
-      background: var(--bg);
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 52px 56px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+      background:
+        radial-gradient(900px 520px at 50% -120px, rgba(173, 128, 24, 0.22), transparent 70%),
+        linear-gradient(180deg, var(--navy-800) 0%, var(--navy-900) 100%);
+      overflow: hidden;
     }
 
-    .top {
-      display: grid;
-      grid-template-columns: 180px 1fr;
+    /* Faint arch outline, echoing the arches on mosqueaisha.ca */
+    .screen::before {
+      content: "";
+      position: absolute;
+      left: 90px;
+      right: 90px;
+      top: 150px;
+      height: 760px;
+      border: 2px solid rgba(173, 128, 24, 0.16);
+      border-bottom: none;
+      border-radius: 450px 450px 0 0;
+      pointer-events: none;
+    }
+
+    /* ---------- Header ---------- */
+    .header {
+      display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 26px;
+      position: relative;
     }
 
     .logo {
-      width: 170px;
-      height: auto;
+      width: 108px;
+      height: 108px;
       object-fit: contain;
-      justify-self: center;
+      flex: none;
     }
 
-    .heading {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-    }
+    .brand { display: flex; flex-direction: column; gap: 6px; }
 
-    .title {
-      font-size: var(--font-xl);
+    .brand h1 {
+      font-family: var(--serif);
       font-weight: 700;
-      line-height: 1.05;
-      margin: 0;
+      font-size: 60px;
+      letter-spacing: 0.06em;
+      line-height: 1;
+      color: var(--ink);
     }
 
-    .subtitle {
-      margin-top: 8px;
-      font-size: var(--font-md);
-      color: var(--muted);
-    }
-
-    .datetimeRow {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .infoCard {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      padding: 22px 28px;
-      text-align: center;
-    }
-
-    .infoLabel {
-      font-size: var(--font-xs);
-      color: var(--muted);
-      margin-bottom: 6px;
+    .brand .location {
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      color: var(--gold-bright);
     }
 
-    .infoValue {
-      font-size: var(--font-lg);
-      font-weight: 700;
-    }
-
-    .nextPrayerCard {
-      background: linear-gradient(135deg, rgba(255, 209, 102, 0.18), rgba(255, 209, 102, 0.08));
-      border: 2px solid rgba(255, 209, 102, 0.35);
-      border-radius: 24px;
-      padding: 24px 30px;
+    /* ---------- Clock ---------- */
+    .clock {
+      position: relative;
       text-align: center;
+      padding-top: 18px;
     }
 
-    .nextPrayerTitle {
-      font-size: var(--font-sm);
-      color: var(--muted);
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .nextPrayerName {
-      font-size: 64px;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 6px;
-    }
-
-    .nextPrayerMeta {
-      font-size: var(--font-md);
-      color: var(--text);
-    }
-
-    .countdown {
-      margin-top: 10px;
-      font-size: var(--font-sm);
-      font-weight: 700;
-      color: var(--green);
-    }
-
-    .statusBar {
-      min-height: 36px;
-      font-size: 24px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    .statusBar.error {
-      color: var(--error);
-      font-weight: 700;
-    }
-
-    .tableCard {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 26px 28px;
-    }
-
-    .tableTitle {
-      margin: 0 0 18px 0;
-      text-align: center;
-      font-size: 42px;
-      font-weight: 800;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    tr {
-      border-bottom: 1px solid var(--line);
-    }
-
-    tr:last-child {
-      border-bottom: none;
-    }
-
-    td {
-      padding: 18px 10px;
-      font-size: 38px;
-    }
-
-    td:first-child {
+    .time {
+      font-family: var(--serif);
       font-weight: 600;
+      font-size: 196px;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+
+    .time .sec {
+      font-size: 64px;
+      color: var(--faint);
+      font-weight: 500;
+      width: 1.6em;
+      text-align: left;
+    }
+
+    .time .ap {
+      font-family: var(--sans);
+      font-size: 44px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-left: -24px;
+    }
+
+    .dates {
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 22px;
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--ink-dim);
+    }
+
+    .dates .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .dates .hijri { color: var(--gold-bright); }
+
+    /* ---------- Next prayer ---------- */
+    .next {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 30px;
+      padding: 34px 44px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(173, 128, 24, 0.24), rgba(173, 128, 24, 0.06));
+      border: 2px solid rgba(217, 168, 58, 0.45);
+      box-shadow: 0 30px 80px -40px rgba(173, 128, 24, 0.6);
+    }
+
+    .eyebrow {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
       color: var(--muted);
     }
 
-    td:last-child {
-      text-align: right;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    tr.active {
-      background: rgba(255, 209, 102, 0.12);
-    }
-
-    tr.active td:first-child,
-    tr.active td:last-child {
-      color: var(--accent);
-      font-weight: 800;
-    }
-
-    .imageWrap {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      padding: 18px;
+    .next .name-row {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      min-height: 420px;
+      align-items: baseline;
+      gap: 22px;
+      margin-top: 8px;
     }
 
-    .image {
+    .next .name {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 86px;
+      line-height: 1;
+      color: var(--gold-bright);
+    }
+
+    .next .name-ar {
+      font-family: var(--arabic);
+      font-size: 56px;
+      line-height: 1;
+      color: rgba(217, 168, 58, 0.75);
+    }
+
+    .next .sub {
+      margin-top: 14px;
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--ink-dim);
+    }
+
+    .next .sub strong { font-weight: 700; color: var(--ink); }
+
+    .next .count-wrap { text-align: right; }
+
+    .next .count {
+      margin-top: 6px;
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 104px;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    /* Between adhan and iqamah, and while salah is in progress */
+    .next.is-iqamah .count { color: var(--ok); }
+    .next.is-now { background: linear-gradient(135deg, rgba(127, 207, 154, 0.22), rgba(127, 207, 154, 0.05)); border-color: rgba(127, 207, 154, 0.5); }
+    .next.is-now .name { color: var(--ok); }
+    .next.is-now .name-ar { color: rgba(127, 207, 154, 0.75); }
+    .next.is-now .count { font-family: var(--sans); font-size: 46px; font-weight: 700; line-height: 1.2; max-width: 380px; }
+
+    /* ---------- Prayer table ---------- */
+    .table {
+      position: relative;
+      border-radius: 32px;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--line);
+      padding: 10px 36px 14px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 205px 235px;
+      white-space: nowrap;
+      align-items: center;
+      column-gap: 10px;
+      padding: 0 18px;
+      height: 102px;
+      border-bottom: 1px solid var(--line);
+      position: relative;
+    }
+
+    .row:last-child { border-bottom: none; }
+
+    .row.head {
+      height: 64px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--faint);
+    }
+
+    .row .col-time { text-align: right; }
+
+    .row .pname {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-right: 20px;
+      min-width: 0;
+    }
+
+    .row .en {
+      font-size: 46px;
+      font-weight: 600;
+      color: var(--ink-dim);
+    }
+
+    .row .ar {
+      font-family: var(--arabic);
+      font-size: 36px;
+      color: var(--faint);
+    }
+
+    .row .t {
+      font-size: 46px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .row .t.iq {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .row .t small {
+      font-size: 0.5em;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      margin-left: 6px;
+      color: var(--faint);
+    }
+
+    .row.active {
+      background: var(--gold-soft);
+      border-radius: 20px;
+      border-bottom-color: transparent;
+    }
+
+    .row.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18px;
+      bottom: 18px;
+      width: 6px;
+      border-radius: 3px;
+      background: var(--gold-bright);
+    }
+
+    .row.active .en,
+    .row.active .t.iq { color: var(--gold-bright); }
+    .row.active .ar { color: rgba(217, 168, 58, 0.7); }
+    .row.done .en, .row.done .t { opacity: 0.55; }
+
+    /* ---------- Announcements ---------- */
+    .board {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      border-radius: 32px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--line);
+    }
+
+    .board img {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
-      max-height: 390px;
       object-fit: contain;
-      border-radius: 16px;
+      opacity: 0;
+      transition: opacity 1.2s ease;
     }
 
+    .board img.show { opacity: 1; }
+    .board.empty { display: none; }
+
+    /* ---------- Footer ---------- */
     .footer {
-      text-align: center;
-      font-size: var(--font-sm);
-      font-weight: 700;
-      color: var(--text);
-      padding-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
     }
+
+    .footer .contact span + span::before {
+      content: "•";
+      margin: 0 14px;
+      color: var(--gold);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      color: var(--faint);
+    }
+
+    .status i {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--ok);
+    }
+
+    .status.warn { color: var(--warn); font-weight: 600; }
+    .status.warn i { background: var(--warn); }
+
+    /* ---------- Ticker ---------- */
+    .ticker {
+      display: flex;
+      align-items: stretch;
+      height: 76px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--line);
+      flex: none;
+    }
+
+    .ticker.hidden { display: none; }
+
+    .ticker-label {
+      flex: none;
+      display: flex;
+      align-items: center;
+      padding: 0 26px;
+      background: var(--gold);
+      color: var(--navy-900);
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .ticker-track {
+      position: relative;
+      flex: 1;
+      overflow: hidden;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+              mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+    }
+
+    .ticker-inner {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      font-size: 34px;
+      font-weight: 600;
+      color: var(--ink);
+      will-change: transform;
+      animation: ticker linear infinite;
+      animation-duration: 30s;
+    }
+
+    .ticker-inner.static { animation: none; position: static; height: 100%; padding-left: 28px; }
+
+    .ticker-inner .msg { padding: 0 34px; }
+    .ticker-inner .sep { color: var(--gold-bright); font-size: 22px; }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ---------- Urgent alert (replaces slides) ---------- */
+    .alert {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      padding: 50px 60px;
+      text-align: center;
+      background: linear-gradient(160deg, rgba(240, 184, 90, 0.20), rgba(240, 184, 90, 0.05));
+      border: 3px solid rgba(240, 184, 90, 0.6);
+      border-radius: 32px;
+    }
+
+    .board.has-alert .alert { display: flex; }
+    .board.has-alert img { visibility: hidden; }
+
+    .alert-tag {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--warn);
+    }
+
+    .alert-title {
+      font-family: var(--serif);
+      font-size: 72px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .alert-text {
+      font-size: 40px;
+      font-weight: 500;
+      line-height: 1.35;
+      color: var(--ink-dim);
+      white-space: pre-line;
+    }
+
+    /* ---------- Night dimming ---------- */
+    .dim {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 3s ease;
+      z-index: 50;
+    }
+
+    body.preview { cursor: default; }
   </style>
 </head>
 <body>
-  <div class="screen">
-    <div class="top">
-      <img
-        src="https://mosqueaisha.ca/assets/logo-clear.png"
-        alt="Mosque Aisha logo"
-        class="logo"
-      />
+  <div class="stage" id="stage">
+    <div class="screen">
 
-      <div class="heading">
-        <h1 class="title">Mosque Aisha</h1>
-        <div class="subtitle">Niagara Falls, Ontario</div>
-      </div>
+      <header class="header">
+        <img class="logo" src="https://mosqueaisha.ca/assets/logo-clear.png" alt="Mosque Aisha" />
+        <div class="brand">
+          <h1>Mosque Aisha</h1>
+          <div class="location" id="locationName">Stanley Ave · Niagara Falls</div>
+        </div>
+      </header>
+
+      <section class="clock">
+        <div class="time">
+          <span id="hm">--:--</span><span class="sec" id="ss">:--</span><span class="ap" id="ap"></span>
+        </div>
+        <div class="dates">
+          <span id="gregorian">--</span>
+          <span class="dot"></span>
+          <span class="hijri" id="hijri">--</span>
+        </div>
+      </section>
+
+      <section class="next" id="next">
+        <div>
+          <div class="eyebrow" id="nextLabel">Next prayer</div>
+          <div class="name-row">
+            <span class="name" id="nextName">Loading</span>
+            <span class="name-ar" id="nextNameAr"></span>
+          </div>
+          <div class="sub" id="nextSub">&nbsp;</div>
+        </div>
+        <div class="count-wrap">
+          <div class="eyebrow" id="countLabel">&nbsp;</div>
+          <div class="count" id="count">--</div>
+        </div>
+      </section>
+
+      <section class="table" id="table">
+        <div class="row head">
+          <span>Prayer</span>
+          <span class="col-time">Adhan</span>
+          <span class="col-time">Iqamah</span>
+        </div>
+        <div id="rows"></div>
+      </section>
+
+      <section class="board" id="board">
+        <img id="imgA" alt="" />
+        <img id="imgB" alt="" />
+        <div class="alert" id="alert">
+          <div class="alert-tag">Important notice</div>
+          <div class="alert-title" id="alertTitle"></div>
+          <div class="alert-text" id="alertText"></div>
+        </div>
+      </section>
+
+      <section class="ticker hidden" id="ticker">
+        <div class="ticker-label">Notices</div>
+        <div class="ticker-track"><div class="ticker-inner" id="tickerInner"></div></div>
+      </section>
+
+      <footer class="footer">
+        <div class="contact">
+          <span>(905) 347-2633</span><span>contact@mosqueaisha.ca</span>
+        </div>
+        <div class="status" id="status"><i></i><span id="statusText">Loading…</span></div>
+      </footer>
+
+      <div class="dim" id="dim"></div>
     </div>
-
-    <div class="datetimeRow">
-      <div class="infoCard">
-        <div class="infoLabel">Today</div>
-        <div id="currentDate" class="infoValue">--</div>
-      </div>
-
-      <div class="infoCard">
-        <div class="infoLabel">Current Time</div>
-        <div id="currentTime" class="infoValue">--</div>
-      </div>
-    </div>
-
-    <div class="nextPrayerCard">
-      <div class="nextPrayerTitle">Next Prayer</div>
-      <div id="nextPrayerName" class="nextPrayerName">Loading...</div>
-      <div id="nextPrayerMeta" class="nextPrayerMeta">--</div>
-      <div id="countdown" class="countdown">--</div>
-    </div>
-
-    <div id="statusBar" class="statusBar">Loading prayer times...</div>
-
-    <div class="tableCard">
-      <h2 class="tableTitle">Today's Prayer Times</h2>
-      <table>
-        <tr data-prayer="fajr"><td>Fajr</td><td id="fajrTime">--:--</td></tr>
-        <tr id="dhuhrRow" data-prayer="dhuhr"><td>Dhuhr</td><td id="dhuhrTime">--:--</td></tr>
-        <tr id="jumah1Row" data-prayer="jumah1"><td>Jumah 1</td><td id="jumah1Time">--:--</td></tr>
-        <tr id="jumah2Row" data-prayer="jumah2"><td>Jumah 2</td><td id="jumah2Time">--:--</td></tr>
-        <tr data-prayer="asr"><td>Asr</td><td id="asrTime">--:--</td></tr>
-        <tr data-prayer="maghrib"><td>Maghrib</td><td id="maghribTime">--:--</td></tr>
-        <tr data-prayer="isha"><td>Isha</td><td id="ishaTime">--:--</td></tr>
-      </table>
-    </div>
-
-    <div class="imageWrap">
-      <img id="rotatingImage" class="image" alt="Community announcement" />
-    </div>
-
-    <div class="footer">contact@mosqueaisha.ca • (905) 347-2633</div>
   </div>
 
   <script>
-    const TIMEZONE = "America/Toronto";
+    /* =====================================================
+       Day-to-day changes are made in admin.html, which saves
+       config.json in this repo. These are the fixed settings.
+       ===================================================== */
+    const SETUP = {
+      timezone: "America/Toronto",
+      apiBase: "https://api.mosqueaisha.ca/mosque-api",
 
-    const NIAGARA_FALLS = {
-      lat: 43.0896,
-      lng: -79.0849
+      // GitHub repo that holds config.json, prayerTimes.json and the slides.
+      // Detected automatically on *.github.io; these are the fallbacks.
+      owner: "Amasud5550",
+      repo: "mosque-aisha-display",
+      branch: "main",
+
+      configPollMs: 2 * 60 * 1000,    // pick up admin changes every 2 min
+      prayerPollMs: 10 * 60 * 1000    // re-check prayer times every 10 min
     };
 
-    const CONFIG = {
-      prayerJsonUrl: "./prayerTimes.json",
-      autoReloadMs: 60 * 60 * 1000,
-      imageRotateMs: 15000
+    const DEFAULT_CONFIG = {
+      locationId: 1,
+      slideSeconds: 15,
+      salahInProgressMin: 10,
+      reloadToken: 0,
+      alert: { enabled: false, title: "", text: "", locations: "all" },
+      ticker: [],
+      slides: [],
+      overrides: [],
+      nightDim: { enabled: false, afterIshaMin: 60, beforeFajrMin: 30, level: 0.65 }
     };
 
-    const images = [
-      <!--"https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/CommunityIftar26.jpeg",-->
-      "https://raw.githubusercontent.com/Amasud5550/mosque-aisha-display/main/WhatsApp%20Image%202025-04-20%20at%2020.45.41.jpeg"
-    ];
+    (function detectRepo() {
+      const m = location.hostname.match(/^([^.]+)\.github\.io$/i);
+      if (m) {
+        SETUP.owner = m[1];
+        const seg = location.pathname.split("/").filter(Boolean)[0];
+        if (seg && !seg.includes(".")) SETUP.repo = seg;
+      }
+    })();
+
+    const params = new URLSearchParams(location.search);
+    const PREVIEW = params.get("preview") === "1";
+    const URL_LOCATION = params.get("location") ? +params.get("location") : null;
+    if (PREVIEW) document.body.classList.add("preview");
+
+    const RAW_BASE = () => `https://raw.githubusercontent.com/${SETUP.owner}/${SETUP.repo}/${SETUP.branch}/`;
+
+    const ARABIC = {
+      fajr: "الفجر", dhuhr: "الظهر", jumuah: "الجمعة",
+      asr: "العصر", maghrib: "المغرب", isha: "العشاء"
+    };
+
+    const CACHE_PRAYERS = "mosque-aisha-display:prayers";
+    const CACHE_CONFIG = "mosque-aisha-display:config";
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
     const state = {
-      prayers: {
-        fajr: "--:--",
-        dhuhr: "--:--",
-        asr: "--:--",
-        maghrib: "--:--",
-        isha: "--:--",
-        jumah1: "--:--",
-        jumah2: "--:--"
-      },
-      imageIndex: 0
+      config: structuredClone(DEFAULT_CONFIG),
+      configStamp: 0,
+      firstReloadToken: null,
+      raw: null,          // last good prayer payload (any supported format)
+      data: null,         // normalised for the current location
+      source: "",
+      loadedAt: null,
+      today: null,
+      renderedFor: "",
+      slideSig: "",
+      tickerSig: "",
+      alertSig: ""
     };
 
-    const $ = (id) => document.getElementById(id);
+    const locationId = () => URL_LOCATION || +state.config.locationId || 1;
 
-    function setText(id, value) {
-      const el = $(id);
-      if (el) el.textContent = value || "--";
+    /* ---------- Time helpers (always Toronto wall-clock) ---------- */
+    const partsFmt = new Intl.DateTimeFormat("en-CA", {
+      timeZone: SETUP.timezone,
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      hourCycle: "h23", weekday: "short"
+    });
+
+    function nowLocal() {
+      const p = {};
+      for (const part of partsFmt.formatToParts(new Date())) p[part.type] = part.value;
+      const h = +p.hour % 24, m = +p.minute, s = +p.second;
+      return { day: `${p.year}-${p.month}-${p.day}`, weekday: p.weekday, h, m, s, secs: h * 3600 + m * 60 + s };
     }
 
-    function setStatus(message, isError = false) {
-      const bar = $("statusBar");
-      if (!bar) return;
-      bar.textContent = message;
-      bar.className = isError ? "statusBar error" : "statusBar";
+    // "13:40:00", "13:40", "1:40 PM", "1:40pm" -> seconds since midnight
+    function toSecs(value) {
+      if (!value) return null;
+      const t = String(value).replace(/[  .]/g, " ").trim().toUpperCase();
+      const m = t.match(/^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)?$/);
+      if (!m) return null;
+      let h = +m[1];
+      const min = +m[2];
+      if (m[3] === "PM" && h !== 12) h += 12;
+      if (m[3] === "AM" && h === 12) h = 0;
+      return h * 3600 + min * 60;
     }
 
-    function normalizeTimeString(timeStr) {
-      if (!timeStr) return "--:--";
+    function fmt12(secs) {
+      if (secs == null) return { hm: "—", ap: "" };
+      const h24 = Math.floor(secs / 3600) % 24;
+      const m = Math.floor((secs % 3600) / 60);
+      return { hm: `${h24 % 12 || 12}:${String(m).padStart(2, "0")}`, ap: h24 < 12 ? "AM" : "PM" };
+    }
 
-      let cleaned = String(timeStr).trim();
+    const timeHTML = (secs) => { const t = fmt12(secs); return t.ap ? `${t.hm}<small>${t.ap}</small>` : t.hm; };
+    const timeText = (secs) => { const t = fmt12(secs); return `${t.hm} ${t.ap}`.trim(); };
 
-      cleaned = cleaned
-        .replace(/\u202F|\u00A0/g, " ")
-        .replace(/\./g, "")
-        .replace(/\s+/g, " ")
-        .toUpperCase();
+    function fmtCountdown(sec) {
+      sec = Math.max(0, Math.floor(sec));
+      const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+      const pad = (n) => String(n).padStart(2, "0");
+      return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+    }
 
-      const match12 = cleaned.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
-      if (match12) {
-        const h = parseInt(match12[1], 10);
-        const m = match12[2];
-        const meridian = match12[3];
-        return `${h}:${m} ${meridian}`;
+    // Shared rules for anything the admin can schedule
+    const inDateRange = (item, day) => (!item.from || day >= item.from) && (!item.to || day <= item.to);
+    const forHere = (item) => !item.locations || item.locations === "all" || +item.locations === locationId();
+    const isLive = (item, day) => item && item.enabled !== false && inDateRange(item, day) && forHere(item);
+
+    /* ---------- Hijri date ---------- */
+    const HIJRI_MONTHS = {
+      "muharram": "Muharram", "safar": "Safar",
+      "rabi al-awwal": "Rabi al-Awwal", "rabi al-thani": "Rabi al-Thani", "rabi al-akhir": "Rabi al-Thani",
+      "jumada al-ula": "Jumada al-Ula", "jumada al-akhirah": "Jumada al-Akhirah", "jumada al-thaniyah": "Jumada al-Akhirah",
+      "rajab": "Rajab", "shaban": "Sha'ban", "ramadan": "Ramadan", "shawwal": "Shawwal",
+      "dhu al-qadah": "Dhul Qa'dah", "dhu al-hijjah": "Dhul Hijjah"
+    };
+
+    function cleanHijri(raw) {
+      if (!raw) return null;
+      const plain = raw.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[ʿʾ'`]/g, "");
+      const m = plain.match(/^(\d{1,2})\s+(.+?),?\s+(\d{4})$/);
+      if (!m) return plain;
+      return `${m[1]} ${HIJRI_MONTHS[m[2].toLowerCase().trim()] || m[2]} ${m[3]} AH`;
+    }
+
+    function hijriFallback() {
+      try {
+        return new Intl.DateTimeFormat("en-u-ca-islamic-umalqura", { day: "numeric", month: "long", year: "numeric", timeZone: SETUP.timezone }).format(new Date());
+      } catch { return ""; }
+    }
+
+    /* ---------- Prayer data normalisation ---------- */
+    function keyFor(name) {
+      const n = name.toLowerCase();
+      if (n.startsWith("jum")) return "jumuah";
+      if (n.startsWith("fajr")) return "fajr";
+      if (n.startsWith("dhu") || n.startsWith("zuh")) return "dhuhr";
+      if (n.startsWith("asr")) return "asr";
+      if (n.startsWith("magh")) return "maghrib";
+      if (n.startsWith("isha")) return "isha";
+      return n;
+    }
+
+    // Accepts: multi-location prayerTimes.json (from the GitHub Action),
+    // a single API prayer list, or the old flat { fajr, dhuhr, ... } file.
+    function normalise(raw, locId) {
+      let day = raw.day || (typeof raw.date === "string" ? raw.date : null);
+      let hijri = raw.date?.hijri || raw.hijri || null;
+      let locationName = raw.locationName || null;
+      let apiList = Array.isArray(raw) ? raw : Array.isArray(raw.prayers) ? raw.prayers : null;
+
+      if (Array.isArray(raw.locations)) {
+        const loc = raw.locations.find((l) => +l.id === +locId) || raw.locations[0];
+        apiList = loc?.prayers || null;
+        locationName = loc?.name || locationName;
       }
 
-      const match24 = cleaned.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
-      if (match24) {
-        let hours = parseInt(match24[1], 10);
-        const minutes = match24[2];
-        const meridian = hours >= 12 ? "PM" : "AM";
-        hours = hours % 12 || 12;
-        return `${hours}:${minutes} ${meridian}`;
-      }
-
-      return cleaned;
-    }
-
-    function formatDisplayTime(timeStr) {
-      if (!timeStr || timeStr === "--:--") return "--:--";
-      return normalizeTimeString(timeStr);
-    }
-
-    function getTorontoNow() {
-      return new Date(
-        new Date().toLocaleString("en-US", { timeZone: TIMEZONE })
-      );
-    }
-
-    function isFridayToronto() {
-      return getTorontoNow().getDay() === 5;
-    }
-
-    function updateClock() {
-      const now = new Date();
-
-      const dateText = new Intl.DateTimeFormat("en-CA", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-        timeZone: TIMEZONE
-      }).format(now);
-
-      const timeText = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-        timeZone: TIMEZONE
-      }).format(now);
-
-      setText("currentDate", dateText);
-      setText("currentTime", normalizeTimeString(timeText));
-
-      toggleFridayRows();
-      updateNextPrayer();
-    }
-
-    function renderPrayerTimes() {
-      setText("fajrTime", formatDisplayTime(state.prayers.fajr));
-      setText("dhuhrTime", formatDisplayTime(state.prayers.dhuhr));
-      setText("asrTime", formatDisplayTime(state.prayers.asr));
-      setText("maghribTime", formatDisplayTime(state.prayers.maghrib));
-      setText("ishaTime", formatDisplayTime(state.prayers.isha));
-      setText("jumah1Time", formatDisplayTime(state.prayers.jumah1));
-      setText("jumah2Time", formatDisplayTime(state.prayers.jumah2));
-    }
-
-    function parseTimeToday(timeStr) {
-      if (!timeStr || timeStr === "--:--") return null;
-
-      const cleaned = normalizeTimeString(timeStr);
-      const match12 = cleaned.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
-      const match24 = cleaned.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
-
-      const localNow = getTorontoNow();
-
-      let hours;
-      let minutes;
-
-      if (match12) {
-        hours = parseInt(match12[1], 10);
-        minutes = parseInt(match12[2], 10);
-        const meridian = match12[3];
-
-        if (meridian === "PM" && hours !== 12) hours += 12;
-        if (meridian === "AM" && hours === 12) hours = 0;
-      } else if (match24) {
-        hours = parseInt(match24[1], 10);
-        minutes = parseInt(match24[2], 10);
+      let list;
+      if (apiList) {
+        list = apiList.map((p) => {
+          const key = keyFor(p.name || "");
+          const order = p.jummah_order || null;
+          return {
+            key,
+            id: key === "jumuah" ? `jumuah${order || 1}` : key,
+            label: key === "jumuah" ? `Jumu'ah${order ? " " + order : ""}` : p.name,
+            arabic: ARABIC[key] || "",
+            start: toSecs(p.start),
+            iqamah: toSecs(p.time) ?? toSecs(p.start),
+            jumuah: !!p.is_jummah || key === "jumuah"
+          };
+        });
       } else {
-        return null;
+        const flat = [["fajr", "Fajr"], ["dhuhr", "Dhuhr"], ["jumah1", "Jumu'ah 1"], ["jumah2", "Jumu'ah 2"], ["asr", "Asr"], ["maghrib", "Maghrib"], ["isha", "Isha"]];
+        list = flat.filter(([k]) => raw[k]).map(([k, label]) => {
+          const jum = k.startsWith("jumah");
+          const key = jum ? "jumuah" : k;
+          return { key, id: jum ? k.replace("jumah", "jumuah") : k, label, arabic: ARABIC[key], start: null, iqamah: toSecs(raw[k]), jumuah: jum };
+        });
       }
 
-      const prayerDate = new Date(localNow);
-      prayerDate.setHours(hours, minutes, 0, 0);
-      return prayerDate;
+      list = list.filter((p) => p.iqamah != null || p.start != null);
+      if (!list.length) throw new Error("No prayer times in response");
+      const jum = list.filter((p) => p.jumuah);
+      if (jum.length === 1) jum[0].label = "Jumu'ah";
+      return { day, hijri, locationName, prayers: list };
     }
 
-    function formatCountdown(ms) {
-      if (ms <= 0) return "Now";
+    /* ---------- Loading ---------- */
+    async function getJSON(url, opts = {}) {
+      const res = await fetch(url, { cache: "no-store", ...opts });
+      if (!res.ok) throw new Error(`${url} → HTTP ${res.status}`);
+      return res.json();
+    }
 
-      const totalSeconds = Math.floor(ms / 1000);
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
+    const cacheGet = (k) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } };
+    const cacheSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
 
-      if (hours > 0) {
-        return `${hours}h ${minutes}m ${seconds}s remaining`;
+    async function loadConfig() {
+      if (PREVIEW) return; // the admin page pushes config into the preview
+      const sources = [
+        // GitHub API: no CDN delay (60 requests/hour per network is plenty at one every 2 min)
+        () => getJSON(`https://api.github.com/repos/${SETUP.owner}/${SETUP.repo}/contents/config.json?ref=${SETUP.branch}`,
+                      { headers: { Accept: "application/vnd.github.raw+json" } }),
+        () => getJSON(`${RAW_BASE()}config.json?t=${Date.now()}`),
+        () => getJSON(`./config.json?t=${Date.now()}`)
+      ];
+      for (const src of sources) {
+        try {
+          const cfg = await src();
+          cacheSet(CACHE_CONFIG, cfg);
+          applyConfig(cfg, true);
+          return;
+        } catch (e) { console.warn("[display] config source failed:", e.message); }
+      }
+    }
+
+    function applyConfig(cfg, fromRemote = false) {
+      const before = locationId();
+      state.config = {
+        ...structuredClone(DEFAULT_CONFIG),
+        ...cfg,
+        alert: { ...DEFAULT_CONFIG.alert, ...(cfg.alert || {}) },
+        nightDim: { ...DEFAULT_CONFIG.nightDim, ...(cfg.nightDim || {}) }
+      };
+      state.configStamp++;
+
+      if (!PREVIEW && fromRemote) {
+        const token = state.config.reloadToken ?? 0;
+        if (state.firstReloadToken === null) state.firstReloadToken = token;
+        else if (token !== state.firstReloadToken) { location.reload(); return; }
       }
 
-      return `${minutes}m ${seconds}s remaining`;
+      if (state.raw) {
+        try { state.data = normalise(state.raw, locationId()); } catch {}
+      }
+      if (before !== locationId()) loadPrayers().then(tick);
+      tick();
     }
 
-    function clearActivePrayerRow() {
-      document.querySelectorAll("tr[data-prayer]").forEach((row) => {
-        row.classList.remove("active");
-      });
+    async function loadLive() {
+      const id = locationId();
+      const [prayers, date, locations] = await Promise.all([
+        getJSON(`${SETUP.apiBase}/prayerTimes/regular/${id}`),
+        getJSON(`${SETUP.apiBase}/prayerTimes/date`).catch(() => null),
+        getJSON(`${SETUP.apiBase}/prayerTimes/locations`).catch(() => null)
+      ]);
+      const loc = Array.isArray(locations) ? locations.find((l) => l.id === id) : null;
+      return { prayers, day: nowLocal().day, date: date?.date, locationName: loc?.name };
     }
 
-    function toggleFridayRows() {
-      const friday = isFridayToronto();
-
-      $("dhuhrRow").style.display = friday ? "none" : "table-row";
-      $("jumah1Row").style.display = friday ? "table-row" : "none";
-      $("jumah2Row").style.display = friday ? "table-row" : "none";
+    async function loadBackup() {
+      let lastErr;
+      for (const url of [`${RAW_BASE()}prayerTimes.json`, "./prayerTimes.json"]) {
+        try { return await getJSON(`${url}?t=${Date.now()}`); } catch (e) { lastErr = e; }
+      }
+      throw lastErr;
     }
 
-    function updateNextPrayer() {
-      clearActivePrayerRow();
+    async function loadPrayers() {
+      for (const [source, fn] of [["live", loadLive], ["backup", loadBackup]]) {
+        try {
+          const raw = await fn();
+          const data = normalise(raw, locationId());
+          Object.assign(state, { raw, data, source, loadedAt: new Date(), renderedFor: "" });
+          cacheSet(CACHE_PRAYERS, raw);
+          return;
+        } catch (e) { console.warn(`[display] ${source} prayers failed:`, e.message); }
+      }
+      if (!state.data) {
+        const cached = cacheGet(CACHE_PRAYERS);
+        if (cached) { try { Object.assign(state, { raw: cached, data: normalise(cached, locationId()), source: "cache", renderedFor: "" }); } catch {} }
+      }
+    }
 
-      const now = getTorontoNow();
+    /* ---------- Schedule logic ---------- */
+    function todaysPrayers(now) {
+      if (!state.data) return [];
+      const friday = now.weekday.toLowerCase().startsWith("fri");
+      const overrides = (state.config.overrides || []).filter((o) => isLive(o, now.day) && toSecs(o.time) != null);
 
-      const schedule = isFridayToronto()
-        ? [
-            { key: "fajr", label: "Fajr", time: state.prayers.fajr },
-            { key: "jumah1", label: "Jumah 1", time: state.prayers.jumah1 },
-            { key: "jumah2", label: "Jumah 2", time: state.prayers.jumah2 },
-            { key: "asr", label: "Asr", time: state.prayers.asr },
-            { key: "maghrib", label: "Maghrib", time: state.prayers.maghrib },
-            { key: "isha", label: "Isha", time: state.prayers.isha }
-          ]
-        : [
-            { key: "fajr", label: "Fajr", time: state.prayers.fajr },
-            { key: "dhuhr", label: "Dhuhr", time: state.prayers.dhuhr },
-            { key: "asr", label: "Asr", time: state.prayers.asr },
-            { key: "maghrib", label: "Maghrib", time: state.prayers.maghrib },
-            { key: "isha", label: "Isha", time: state.prayers.isha }
-          ];
+      return state.data.prayers
+        .filter((p) => (friday ? p.key !== "dhuhr" : !p.jumuah))
+        .map((p) => {
+          const o = overrides.find((x) => x.prayer === p.id);
+          return o ? { ...p, iqamah: toSecs(o.time), overridden: true } : p;
+        })
+        .sort((a, b) => (a.iqamah ?? a.start) - (b.iqamah ?? b.start));
+    }
 
-      let nextPrayer = null;
+    function currentPhase(list, now) {
+      const t = now.secs;
+      const windowSecs = (+state.config.salahInProgressMin || 0) * 60;
 
-      for (const prayer of schedule) {
-        const prayerDate = parseTimeToday(prayer.time);
+      for (const p of list) {
+        if (p.iqamah != null && t >= p.iqamah && t < p.iqamah + windowSecs) return { prayer: p, phase: "now" };
+      }
 
-        if (prayerDate && prayerDate > now) {
-          nextPrayer = {
-            ...prayer,
-            date: prayerDate
-          };
-          break;
+      for (const p of list) {
+        const iq = p.iqamah ?? p.start;
+        if (iq > t) {
+          if (p.jumuah) return { prayer: p, phase: "iqamah-only", target: iq };
+          if (p.start != null && p.start < iq && t >= p.start) return { prayer: p, phase: "iqamah", target: iq };
+          const target = p.start != null && p.start > t ? p.start : iq;
+          return { prayer: p, phase: target === iq ? "iqamah-only" : "adhan", target };
         }
       }
 
-      if (!nextPrayer) {
-        const tomorrowFajr = parseTimeToday(state.prayers.fajr);
+      const fajr = list.find((p) => p.key === "fajr");
+      if (!fajr) return null;
+      return { prayer: fajr, phase: fajr.start != null ? "adhan" : "iqamah-only", target: (fajr.start ?? fajr.iqamah) + 86400, tomorrow: true };
+    }
 
-        if (tomorrowFajr) {
-          tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
-          nextPrayer = {
-            key: "fajr",
-            label: "Fajr",
-            time: state.prayers.fajr,
-            date: tomorrowFajr
-          };
-        }
+    /* ---------- Rendering ---------- */
+    function renderRows(list) {
+      $("rows").innerHTML = list.map((p) => `
+        <div class="row" data-id="${p.id}">
+          <div class="pname"><span class="en">${p.label}</span><span class="ar">${p.arabic}</span></div>
+          <div class="col-time t">${p.start != null ? timeHTML(p.start) : "—"}</div>
+          <div class="col-time t iq">${timeHTML(p.iqamah ?? p.start)}</div>
+        </div>`).join("");
+    }
+
+    function renderHeaderData() {
+      const d = state.data;
+      const name = d?.locationName || (locationId() === 2 ? "Mosque Aisha (Thorold)" : "Mosque Aisha (Stanley Ave)");
+      const short = name.replace(/^Mosque Aisha\s*\(?/i, "").replace(/\)$/, "");
+      $("locationName").textContent = short.toLowerCase().includes("thorold") ? "Thorold, Ontario" : `${short} · Niagara Falls`;
+      $("hijri").textContent = cleanHijri(d?.hijri) || hijriFallback();
+    }
+
+    function renderStatus(now) {
+      const el = $("status"), txt = $("statusText");
+      if (!state.data) { el.className = "status warn"; txt.textContent = "Prayer times unavailable — check internet"; return; }
+      if (state.data.day && state.data.day !== now.day) {
+        const label = new Date(state.data.day + "T12:00:00").toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+        el.className = "status warn";
+        txt.textContent = `Offline · showing times from ${label}`;
+        return;
       }
+      el.className = "status";
+      const at = state.loadedAt ? state.loadedAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: SETUP.timezone }) : "";
+      txt.textContent = PREVIEW ? "Preview" : state.source === "cache" ? "Using saved times" : `Updated ${at}`;
+    }
 
-      if (!nextPrayer) {
-        setText("nextPrayerName", "Unavailable");
-        setText("nextPrayerMeta", "--");
-        setText("countdown", "--");
+    function renderClock(now) {
+      const t = fmt12(now.secs);
+      $("hm").textContent = t.hm;
+      $("ss").textContent = `:${String(now.s).padStart(2, "0")}`;
+      $("ap").textContent = t.ap;
+      $("gregorian").textContent = new Intl.DateTimeFormat("en-CA", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: SETUP.timezone }).format(new Date());
+    }
+
+    function renderNext(list, now) {
+      const card = $("next");
+      card.classList.remove("is-iqamah", "is-now");
+      document.querySelectorAll(".row").forEach((r) => r.classList.remove("active", "done"));
+
+      const info = currentPhase(list, now);
+      if (!info) {
+        $("nextName").textContent = "—"; $("nextNameAr").textContent = "";
+        $("nextSub").innerHTML = "&nbsp;"; $("countLabel").innerHTML = "&nbsp;"; $("count").textContent = "--";
         return;
       }
 
-      const diff = nextPrayer.date - now;
+      const p = info.prayer;
+      $("nextName").textContent = p.label;
+      $("nextNameAr").textContent = p.arabic;
 
-      setText("nextPrayerName", nextPrayer.label);
-      setText("nextPrayerMeta", formatDisplayTime(nextPrayer.time));
-      setText("countdown", formatCountdown(diff));
-
-      const activeRow = document.querySelector(`tr[data-prayer="${nextPrayer.key}"]`);
-      if (activeRow) activeRow.classList.add("active");
-    }
-
-    function utcToTorontoTimeString(utcString) {
-      const date = new Date(utcString);
-
-      const parts = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-        timeZone: TIMEZONE
-      }).formatToParts(date);
-
-      const hour = parts.find(p => p.type === "hour")?.value || "--";
-      const minute = parts.find(p => p.type === "minute")?.value || "--";
-      const dayPeriod = parts.find(p => p.type === "dayPeriod")?.value?.toUpperCase() || "";
-
-      return `${hour}:${minute} ${dayPeriod}`;
-    }
-
-    async function loadSunsetForNiagaraFalls() {
-      const url = `https://api.sunrise-sunset.org/json?lat=${NIAGARA_FALLS.lat}&lng=${NIAGARA_FALLS.lng}&formatted=0`;
-
-      const response = await fetch(url, { cache: "no-store" });
-      if (!response.ok) {
-        throw new Error(`Sunset API HTTP ${response.status}`);
+      if (info.phase === "now") {
+        card.classList.add("is-now");
+        $("nextLabel").textContent = "Now";
+        $("nextSub").innerHTML = `Iqamah <strong>${timeText(p.iqamah)}</strong>`;
+        $("countLabel").textContent = "Salah in progress";
+        $("count").textContent = "Please silence your phone";
+      } else {
+        $("nextLabel").textContent = info.tomorrow ? "Next prayer · tomorrow" : "Next prayer";
+        const isJum = p.jumuah;
+        if (info.phase === "iqamah") {
+          card.classList.add("is-iqamah");
+          $("countLabel").textContent = "Iqamah in";
+          $("nextSub").innerHTML = `Adhan was at <strong>${timeText(p.start)}</strong>`;
+        } else if (info.phase === "adhan") {
+          $("countLabel").textContent = "Adhan in";
+          $("nextSub").innerHTML = p.iqamah != null && p.iqamah !== p.start
+            ? `Iqamah at <strong>${timeText(p.iqamah)}</strong>`
+            : `Adhan at <strong>${timeText(p.start)}</strong>`;
+        } else {
+          $("countLabel").textContent = isJum ? "Starts in" : "Iqamah in";
+          $("nextSub").innerHTML = `${isJum ? "Starts" : "Iqamah"} at <strong>${timeText(p.iqamah)}</strong>`;
+        }
+        $("count").textContent = fmtCountdown(info.target - now.secs);
       }
 
-      const data = await response.json();
+      const rows = [...document.querySelectorAll("#rows .row")];
+      const idx = rows.findIndex((r) => r.dataset.id === p.id);
+      rows.forEach((r, k) => {
+        if (k === idx) r.classList.add("active");
+        else if (!info.tomorrow && k < idx) r.classList.add("done");
+      });
+    }
 
-      if (data.status !== "OK" || !data.results || !data.results.sunset) {
-        throw new Error("Sunset API returned invalid data");
+    /* ---------- Slides ---------- */
+    const slideUrl = (src) => /^https?:\/\//i.test(src) ? src : RAW_BASE() + src.split("/").map(encodeURIComponent).join("/");
+    const slideTimer = { id: null };
+
+    function renderSlides(now) {
+      const slides = (state.config.slides || []).filter((s) => s.src && isLive(s, now.day));
+      const sig = JSON.stringify(slides.map((s) => [s.src, s.seconds])) + "|" + state.config.slideSeconds;
+      if (sig === state.slideSig) return;
+      state.slideSig = sig;
+
+      clearTimeout(slideTimer.id);
+      const layers = [$("imgA"), $("imgB")];
+      layers.forEach((l) => { l.classList.remove("show"); l.removeAttribute("src"); l.onload = null; });
+      updateBoardVisibility(slides.length);
+      if (!slides.length) return;
+
+      let i = 0, front = 0;
+      const step = () => {
+        const s = slides[i];
+        const layer = layers[1 - front];
+        layer.onload = () => {
+          layer.classList.add("show");
+          layers[front].classList.remove("show");
+          front = 1 - front;
+        };
+        layer.onerror = () => console.warn("[display] slide failed to load:", s.src);
+        layer.src = slideUrl(s.src);
+        const secs = +s.seconds || +state.config.slideSeconds || 15;
+        i = (i + 1) % slides.length;
+        if (slides.length > 1) slideTimer.id = setTimeout(step, secs * 1000);
+      };
+      step();
+    }
+
+    function updateBoardVisibility(slideCount) {
+      const hasAlert = $("board").classList.contains("has-alert");
+      const count = slideCount ?? (state.config.slides || []).filter((s) => s.src && isLive(s, nowLocal().day)).length;
+      $("board").classList.toggle("empty", !count && !hasAlert);
+    }
+
+    /* ---------- Ticker & alert ---------- */
+    function renderTicker(now) {
+      const msgs = (state.config.ticker || []).filter((m) => m.text && isLive(m, now.day)).map((m) => m.text.trim());
+      const sig = JSON.stringify(msgs);
+      if (sig === state.tickerSig) return;
+      state.tickerSig = sig;
+
+      const bar = $("ticker"), inner = $("tickerInner");
+      bar.classList.toggle("hidden", !msgs.length);
+      if (!msgs.length) { inner.innerHTML = ""; return; }
+
+      const one = msgs.map((m) => `<span class="msg">${esc(m)}</span><span class="sep">◆</span>`).join("");
+      inner.classList.remove("static");
+      inner.innerHTML = one;
+      requestAnimationFrame(() => {
+        const trackW = bar.querySelector(".ticker-track").clientWidth;
+        const w = inner.scrollWidth;
+        if (msgs.length === 1 && w - 70 <= trackW) {
+          inner.classList.add("static");
+          inner.innerHTML = `<span class="msg">${esc(msgs[0])}</span>`;
+          return;
+        }
+        // repeat until the strip is at least twice the track width, then loop at -50%
+        let html = one, reps = 1;
+        while (w * reps < trackW) { html += one; reps++; }
+        inner.innerHTML = html + html;
+        inner.style.animationDuration = `${Math.max(12, (w * reps) / 90)}s`; // ~90px per second
+      });
+    }
+
+    function renderAlert(now) {
+      const a = state.config.alert || {};
+      const on = !!(a.enabled && (a.title || a.text) && isLive({ ...a, enabled: true }, now.day));
+      const sig = on ? JSON.stringify([a.title, a.text]) : "";
+      if (sig === state.alertSig) return;
+      state.alertSig = sig;
+      $("alertTitle").textContent = on ? a.title || "" : "";
+      $("alertText").textContent = on ? a.text || "" : "";
+      $("board").classList.toggle("has-alert", on);
+      updateBoardVisibility();
+    }
+
+    /* ---------- Night dimming ---------- */
+    function renderDim(list, now) {
+      const d = state.config.nightDim || {};
+      let dim = false;
+      if (d.enabled && list.length) {
+        const isha = list.find((p) => p.key === "isha");
+        const fajr = list.find((p) => p.key === "fajr");
+        if (isha && fajr) {
+          const start = ((isha.iqamah ?? isha.start) + (+d.afterIshaMin || 0) * 60) % 86400;
+          const end = ((fajr.start ?? fajr.iqamah) - (+d.beforeFajrMin || 0) * 60 + 86400) % 86400;
+          dim = start > end ? now.secs >= start || now.secs < end : now.secs >= start && now.secs < end;
+        }
+      }
+      $("dim").style.opacity = dim ? Math.min(0.9, Math.max(0, +d.level || 0.65)) : 0;
+    }
+
+    /* ---------- Main loop ---------- */
+    function tick() {
+      const now = nowLocal();
+
+      if (state.today && state.today !== now.day && !PREVIEW) { location.reload(); return; }
+      state.today = now.day;
+
+      renderClock(now);
+
+      const list = todaysPrayers(now);
+      const sig = `${now.day}|${now.weekday}|${state.loadedAt?.getTime() || 0}|${state.source}|${state.configStamp}`;
+      if (sig !== state.renderedFor) {
+        renderRows(list);
+        renderHeaderData();
+        state.renderedFor = sig;
       }
 
-      return utcToTorontoTimeString(data.results.sunset);
+      renderNext(list, now);
+      renderStatus(now);
+      renderAlert(now);
+      renderSlides(now);
+      renderTicker(now);
+      renderDim(list, now);
     }
 
-    async function loadPrayerTimes() {
-      try {
-        setStatus("Loading prayer times...");
-
-        const response = await fetch(CONFIG.prayerJsonUrl, { cache: "no-store" });
-        if (!response.ok) throw new Error(`Prayer JSON HTTP ${response.status}`);
-
-        const data = await response.json();
-
-        state.prayers.fajr = normalizeTimeString(data.fajr || "--:--");
-        state.prayers.dhuhr = normalizeTimeString(data.dhuhr || "--:--");
-        state.prayers.asr = normalizeTimeString(data.asr || "--:--");
-        state.prayers.isha = normalizeTimeString(data.isha || "--:--");
-        state.prayers.jumah1 = normalizeTimeString(data.jumah1 || "--:--");
-        state.prayers.jumah2 = normalizeTimeString(data.jumah2 || "--:--");
-
-        state.prayers.maghrib = normalizeTimeString(await loadSunsetForNiagaraFalls());
-
-        renderPrayerTimes();
-        toggleFridayRows();
-        updateNextPrayer();
-
-        setStatus("Prayer times loaded");
-      } catch (err) {
-        console.error("Error loading prayer times:", err);
-        setStatus(`Prayer times failed: ${err.message}`, true);
-      }
+    /* ---------- Fit 1080x1920 canvas to any screen ---------- */
+    function fit() {
+      const s = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+      $("stage").style.transform = `translate(-50%, -50%) scale(${s})`;
     }
 
-    function rotateImages() {
-      const imageEl = $("rotatingImage");
-      if (!imageEl || images.length === 0) return;
-
-      imageEl.src = images[state.imageIndex];
-      state.imageIndex = (state.imageIndex + 1) % images.length;
+    /* ---------- Preview bridge for admin.html ---------- */
+    if (PREVIEW) {
+      window.addEventListener("message", (e) => {
+        // Preview mode only changes what this one tab shows, so any admin origin may drive it
+        if (e.data?.type !== "mad-config") return;
+        applyConfig(e.data.config || {});
+      });
+      window.parent?.postMessage({ type: "mad-preview-ready" }, "*");
     }
 
-    toggleFridayRows();
-    updateClock();
-    setInterval(updateClock, 1000);
+    /* ---------- Boot ---------- */
+    fit();
+    window.addEventListener("resize", fit);
 
-    rotateImages();
-    if (images.length > 1) {
-      setInterval(rotateImages, CONFIG.imageRotateMs);
+    if (!PREVIEW) {
+      const cachedCfg = cacheGet(CACHE_CONFIG);
+      if (cachedCfg) applyConfig(cachedCfg);
     }
+    const cachedPrayers = cacheGet(CACHE_PRAYERS);
+    if (cachedPrayers) { try { Object.assign(state, { raw: cachedPrayers, data: normalise(cachedPrayers, locationId()), source: "cache" }); } catch {} }
 
-    setInterval(() => location.reload(), CONFIG.autoReloadMs);
+    tick();
+    setInterval(tick, 1000);
 
-    loadPrayerTimes();
+    loadConfig().then(loadPrayers).then(tick);
+    setInterval(loadConfig, SETUP.configPollMs);
+    setInterval(() => loadPrayers().then(tick), SETUP.prayerPollMs);
   </script>
 </body>
 </html>
