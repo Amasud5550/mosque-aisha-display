@@ -1,113 +1,120 @@
 {
-    "day": "2026-11-10",
-    "date": {
-        "hijri": "30 Jum\u0101d\u00e1 al-\u016bl\u00e1, 1448",
-        "gregorian": "10 November, 2026"
-    },
-    "locations": [
+  "day": "2026-11-10",
+  "date": {
+    "hijri": "30 Jumādá al-ūlá, 1448",
+    "gregorian": "10 November, 2026"
+  },
+  "locations": [
+    {
+      "id": 1,
+      "name": "Mosque Aisha (Stanley Ave)",
+      "prayers": [
         {
-            "id": 1,
-            "name": "Mosque Aisha (Stanley Ave)",
-            "prayers": [
-                {
-                    "name": "Fajr",
-                    "time": "06:00:00",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "05:42"
-                },
-                {
-                    "name": "Dhuhr",
-                    "time": "12:30:00",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "12:01"
-                },
-                {
-                    "name": "Jummah 1",
-                    "time": "13:40:00",
-                    "is_jummah": true,
-                    "jummah_order": 1,
-                    "start": "12:01"
-                },
-                {
-                    "name": "Jummah 2",
-                    "time": "14:40:00",
-                    "is_jummah": true,
-                    "jummah_order": 2,
-                    "start": "12:01"
-                },
-                {
-                    "name": "Asr",
-                    "time": "15:15:00",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "14:37"
-                },
-                {
-                    "name": "Maghrib",
-                    "time": "16:58",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "16:58"
-                },
-                {
-                    "name": "Isha",
-                    "time": "18:45:00",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "18:19"
-                }
-            ]
+          "name": "Fajr",
+          "time": "06:00:00",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "05:42"
         },
         {
-            "id": 2,
-            "name": "Mosque Aisha (Thorold)",
-            "prayers": [
-                {
-                    "name": "Fajr",
-                    "time": "06:00:00",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "05:42"
-                },
-                {
-                    "name": "Jummah 1",
-                    "time": "13:30:00",
-                    "is_jummah": true,
-                    "jummah_order": 1,
-                    "start": "12:01"
-                },
-                {
-                    "name": "Dhuhr",
-                    "time": "13:45:00",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "12:01"
-                },
-                {
-                    "name": "Asr",
-                    "time": "15:30:00",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "14:37"
-                },
-                {
-                    "name": "Maghrib",
-                    "time": "16:58",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "16:58"
-                },
-                {
-                    "name": "Isha",
-                    "time": "20:00:00",
-                    "is_jummah": false,
-                    "jummah_order": null,
-                    "start": "18:19"
-                }
-            ]
+          "name": "Dhuhr",
+          "time": "12:30:00",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "12:01"
+        },
+        {
+          "name": "Jummah 1",
+          "time": "13:40:00",
+          "is_jummah": true,
+          "jummah_order": 1,
+          "start": "12:01"
+        },
+        {
+          "name": "Jummah 2",
+          "time": "14:40:00",
+          "is_jummah": true,
+          "jummah_order": 2,
+          "start": "12:01"
+        },
+        {
+          "name": "Asr",
+          "time": "15:15:00",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "14:37"
+        },
+        {
+          "name": "Maghrib",
+          "time": "16:58",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "16:58"
+        },
+        {
+          "name": "Isha",
+          "time": "18:45:00",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "18:19"
         }
-    ],
-    "updatedAt": "2026-11-10T08:20:00Z"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Mosque Aisha (Thorold)",
+      "prayers": [
+        {
+          "name": "Fajr",
+          "time": "06:00:00",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "05:42"
+        },
+        {
+          "name": "Jummah 1",
+          "time": "13:30:00",
+          "is_jummah": true,
+          "jummah_order": 1,
+          "start": "12:01"
+        },
+        {
+          "name": "Dhuhr",
+          "time": "13:45:00",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "12:01"
+        },
+        {
+          "name": "Asr",
+          "time": "15:30:00",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "14:37"
+        },
+        {
+          "name": "Maghrib",
+          "time": "16:58",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "16:58"
+        },
+        {
+          "name": "Isha",
+          "time": "20:00:00",
+          "is_jummah": false,
+          "jummah_order": null,
+          "start": "18:19"
+        }
+      ]
+    }
+  ],
+  "fajr": "06:00:00",
+  "dhuhr": "12:30:00",
+  "asr": "15:15:00",
+  "maghrib": "16:58",
+  "isha": "18:45:00",
+  "jumah1": "13:40:00",
+  "jumah2": "14:40:00",
+  "updatedAt": "2026-11-10T08:20:00Z"
 }
