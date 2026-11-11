@@ -58,6 +58,15 @@
       "from": "",
       "to": "",
       "seconds": null
+    },
+    {
+      "id": "s-mwbn66au4r2s",
+      "src": "announcements/20261111045130-new-updated-jumah-times-4.png",
+      "enabled": true,
+      "locations": "all",
+      "from": "",
+      "to": "",
+      "seconds": null
     }
   ],
   "overrides": [
