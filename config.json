@@ -5,12 +5,12 @@
   "salahInProgressMin": 15,
   "reloadToken": 12,
   "alert": {
-    "enabled": true,
-    "title": "zztest",
-    "text": "test",
+    "enabled": false,
+    "title": "",
+    "text": "",
     "locations": 1,
-    "from": "2026-11-11",
-    "to": "2026-11-12"
+    "from": "",
+    "to": ""
   },
   "ticker": [
     {
