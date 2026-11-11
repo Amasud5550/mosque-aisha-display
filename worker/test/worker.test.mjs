@@ -187,3 +187,11 @@ test("server-side settings cleaner matches the admin page's rules", () => {
   const c = normaliseConfig({ overrides: [{ prayer: "__proto__", time: "7:30" }], nightDim: { level: 5 } });
   assert.equal(c.overrides[0].prayer, "isha"); assert.equal(c.overrides[0].time, "07:30"); assert.equal(c.nightDim.level, 0.9);
 });
+test("protective headers are on every response, errors included", async () => {
+  for (const r of [await call("/me"), await call(R, { tok: await token() }), await call(R, { tok: await token(), origin: "https://evil.example" })]) {
+    assert.equal(r.res.headers.get("X-Content-Type-Options"), "nosniff");
+    assert.equal(r.res.headers.get("X-Frame-Options"), "DENY");
+    assert.equal(r.res.headers.get("Cache-Control"), "no-store");
+    assert.match(r.res.headers.get("Content-Security-Policy"), /frame-ancestors 'none'/);
+  }
+});

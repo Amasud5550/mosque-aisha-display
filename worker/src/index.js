@@ -293,16 +293,24 @@ function corsHeaders(env, origin) {
   };
 }
 
+// Applied to every response, including errors
+const SECURITY_HEADERS = {
+  "Cache-Control": "no-store",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'",
+  "Referrer-Policy": "no-referrer",
+  "Strict-Transport-Security": "max-age=31536000"
+};
+
 function withHeaders(res, extra) {
   const h = new Headers(res.headers);
-  for (const [k, v] of Object.entries(extra)) h.set(k, v);
-  h.set("Cache-Control", "no-store");
-  h.set("X-Content-Type-Options", "nosniff");
+  for (const [k, v] of Object.entries({ ...extra, ...SECURITY_HEADERS })) h.set(k, v);
   return new Response(res.body, { status: res.status, headers: h });
 }
 
 function json(obj, status = 200, headers = {}) {
-  return new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store", ...headers } });
+  return new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json", ...headers, ...SECURITY_HEADERS } });
 }
 
 function httpError(status, message) { const e = new Error(message); e.status = status; return e; }

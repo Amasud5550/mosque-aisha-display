@@ -6,15 +6,15 @@
  *
  * Bump VERSION if this file's caching rules change.
  */
-const VERSION = "v1";
+const VERSION = "v2";
 const SHELL = `shell-${VERSION}`;
 const ASSETS = `assets-${VERSION}`;
 const MAX_ASSETS = 80;
-const PRECACHE = ["./", "./index.html", "./screen.js"];
+const PRECACHE = ["./", "./index.html", "./screen.js", "./fonts/fonts.css", "./assets/logo.png"];
 
 // Always straight to the network: admin, data, and anything the admin preview loads
 const BYPASS = /\/(admin\.html|admin\.js|config\.json|prayerTimes\.json|sw\.js)$/;
-const ASSET_HOSTS = new Set(["fonts.googleapis.com", "fonts.gstatic.com", "raw.githubusercontent.com", "mosqueaisha.ca"]);
+const ASSET_HOSTS = new Set(["raw.githubusercontent.com"]);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(SHELL).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
@@ -35,6 +35,8 @@ self.addEventListener("fetch", (event) => {
 
   if (url.origin === self.location.origin) {
     if (BYPASS.test(url.pathname) || url.searchParams.get("preview") === "1") return;
+    // fonts and the logo never change: serve the saved copy straight away
+    if (/\/(fonts|assets)\//.test(url.pathname)) { event.respondWith(staleWhileRevalidate(req)); return; }
     event.respondWith(networkFirst(req, url));
     return;
   }

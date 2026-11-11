@@ -10,10 +10,10 @@ workers_dev = true
 
 [vars]
 # Microsoft Entra (Mosque Aisha's Microsoft 365): copy these from the app registration's Overview page
-TENANT_ID = "PASTE-DIRECTORY-TENANT-ID"
-CLIENT_ID = "PASTE-APPLICATION-CLIENT-ID"
+TENANT_ID = "93601ca2-43b1-4b34-ad54-c9f3b0e26b9a"
+CLIENT_ID = "5caedcf6-94d6-4f0e-81f3-3c3ee2adbfbe"
 # Object ID of the "Display Admins" security group (Entra admin center → Groups → the group → Overview)
-ADMIN_GROUP_ID = "PASTE-GROUP-OBJECT-ID"
+ADMIN_GROUP_ID = "d0920221-2e84-47bc-be15-283d6fa94b20"
 
 # Only the GitHub Pages site may call this Worker
 ALLOWED_ORIGIN = "https://amasud5550.github.io"

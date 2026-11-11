@@ -60,3 +60,13 @@ Change times permanently in the mosque website's admin. Use **Time changes** in 
 - `sw.js` keeps an offline copy of the screen, fonts and slides, so a TV can start and keep running when the internet is down. The page also keeps the last prayer times it saw.
 - The midnight reload and "Reload all screens" only happen when the site is reachable, so an outage can't leave a TV on an error page.
 - Screens check `config.json` every 2 minutes using ETags, so unchanged checks don't use up GitHub's hourly request limit shared by all screens on one network.
+
+## Privacy
+
+- **The screens** use no cookies, analytics or tracking, and make no third-party requests beyond the mosque's own prayer-time API and this GitHub repo. Fonts (`fonts/`, SIL Open Font License) and the logo (`assets/`) are served from this site. The page keeps the last prayer times and settings in the TV browser's local storage so it can run offline.
+- **The admin page** handles one piece of personal information: the signed-in volunteer's name, from Microsoft. It's written into the commit message (`Admin (Name): …`) so changes can be traced. The repo is public, so that name is publicly visible in the history; email addresses are never recorded. Sign-in tokens stay in the browser tab's session storage and are cleared on sign out.
+- **Everything in this repo is public**: images, settings and history. Don't upload anything you wouldn't put on the wall.
+
+## Accessibility
+
+The admin page and both screen layouts pass an automated WCAG 2.1 AA scan (axe-core) with no violations: labelled controls, 4.5:1 text contrast, landmarks and headings, keyboard focus styles. The admin works with a keyboard alone (⌘S / Ctrl+S publishes).

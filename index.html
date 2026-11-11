@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=1080, initial-scale=1.0" />
   <!-- Only this site's own script may run; data only from the mosque API and this GitHub repo -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://api.mosqueaisha.ca https://api.github.com https://raw.githubusercontent.com https://fonts.googleapis.com https://fonts.gstatic.com https://mosqueaisha.ca; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https: data:; connect-src 'self' https://api.mosqueaisha.ca https://api.github.com https://raw.githubusercontent.com; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>Mosque Aisha Display</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@500;600;700&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Fonts and logo are served from this site: no third-party requests, and they work offline -->
+  <link rel="stylesheet" href="./fonts/fonts.css" />
 
   <style>
     :root {
@@ -81,7 +80,7 @@
       left: 90px;
       right: 90px;
       top: 150px;
-      height: 350px;
+      height: 312px;
       border: 2px solid rgba(173, 128, 24, 0.16);
       border-bottom: none;
       border-radius: 450px 450px 0 0;
@@ -155,7 +154,7 @@
       font-weight: 600;
       letter-spacing: 0.12em;
       color: var(--muted);
-      margin-left: -24px;
+      margin-left: -6px;
     }
 
     .dates {
@@ -632,10 +631,10 @@
 </head>
 <body>
   <div class="stage" id="stage">
-    <div class="screen">
+    <main class="screen">
 
       <header class="header">
-        <img class="logo" src="https://mosqueaisha.ca/assets/logo-clear.png" alt="Mosque Aisha" />
+        <img class="logo" src="./assets/logo.png" alt="Mosque Aisha" />
         <div class="brand">
           <h1>Mosque Aisha</h1>
           <div class="location" id="locationName">Stanley Ave · Niagara Falls</div>
@@ -700,7 +699,7 @@
       </footer>
 
       <div class="dim" id="dim"></div>
-    </div>
+    </main>
   </div>
 
   <script src="./screen.js"></script>

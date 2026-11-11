@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <!-- The GitHub token lives on this page, so it is locked down hard:
        only admin.js may run, and it can only talk to GitHub's API. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com https://mosqueaisha.ca data: blob:; connect-src https://api.github.com https://login.microsoftonline.com https://mosque-aisha-display-admin.alvimasud.workers.dev; frame-src 'self' https://*.github.io; base-uri 'none'; form-action 'none'; object-src 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' https://raw.githubusercontent.com data: blob:; connect-src https://api.github.com https://login.microsoftonline.com https://mosque-aisha-display-admin.alvimasud.workers.dev; frame-src 'self' https://*.github.io; base-uri 'none'; form-action 'none'; object-src 'none'" />
   <meta name="referrer" content="no-referrer" />
   <!-- Sign in with Microsoft: fill these in (see worker/SETUP.md). The Worker URL must also be
        added to connect-src in the Content-Security-Policy line above. Leave as-is to use GitHub tokens only. -->
@@ -15,10 +15,9 @@
         data-client="5caedcf6-94d6-4f0e-81f3-3c3ee2adbfbe"
         data-worker="https://mosque-aisha-display-admin.alvimasud.workers.dev" />
   <title>Display Admin · Mosque Aisha</title>
-  <link rel="icon" href="https://mosqueaisha.ca/assets/logo-clear.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="./assets/logo.png" />
+  <!-- Fonts and logo are served from this site: no third-party requests, and they work offline -->
+  <link rel="stylesheet" href="./fonts/fonts.css" />
 
   <style>
     :root {
@@ -58,7 +57,7 @@
     button, input, select, textarea { font: inherit; color: inherit; }
     a { color: var(--gold-2); }
     .hidden { display: none !important; }
-    kbd { font-family: var(--sans); font-size: 11px; font-weight: 700; padding: 1px 5px; border-radius: 4px; border: 1px solid currentColor; opacity: .7; }
+    kbd { font-family: var(--sans); font-size: 11px; font-weight: 800; padding: 1px 5px; border-radius: 4px; border: 1px solid currentColor; }
 
     /* ---------- Buttons & fields ---------- */
     .btn {
@@ -71,8 +70,8 @@
     .btn:hover { border-color: rgba(226,226,226,.32); }
     .btn:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
     .btn:disabled { opacity: .45; cursor: not-allowed; }
-    .btn.primary { background: var(--gold); border-color: var(--gold); color: #120c00; }
-    .btn.primary:hover:not(:disabled) { background: var(--gold-2); border-color: var(--gold-2); }
+    .btn.primary { background: var(--gold-2); border-color: var(--gold-2); color: #120c00; }
+    .btn.primary:hover:not(:disabled) { background: #e6b850; border-color: #e6b850; }
     .btn.danger { color: var(--bad); }
     .btn.ghost { background: transparent; }
     .btn.sm { height: 30px; padding: 0 10px; font-size: 13px; border-radius: 8px; }
@@ -133,7 +132,7 @@
 
     .top { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding: 0 16px 0 18px; border-bottom: 1px solid var(--line); background: var(--bg-2); position: sticky; top: 0; z-index: 20; height: var(--top-h); }
     .top img { width: 30px; height: 30px; object-fit: contain; }
-    .top .title { font-family: var(--serif); font-weight: 700; font-size: 16px; letter-spacing: .04em; white-space: nowrap; }
+    .top .title { margin: 0; font-family: var(--serif); font-weight: 700; font-size: 16px; letter-spacing: .04em; white-space: nowrap; }
     .top .repo { font-size: 12px; color: var(--muted); padding: 3px 9px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 240px; }
     .top .spacer { flex: 1; }
     .save-state { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--muted); white-space: nowrap; }
@@ -151,7 +150,7 @@
     .nav button.on { background: var(--gold-soft); color: var(--gold-2); }
     .nav .mobile-only { display: none; }
     .nav .badge { margin-left: auto; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--gold); color: #120c00; font-size: 11px; font-weight: 800; display: grid; place-items: center; }
-    .nav .nav-foot { margin-top: auto; padding: 10px 6px 2px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .nav .nav-foot { margin-top: auto; padding: 10px 6px 2px; font-size: 12px; color: #a3abbb; line-height: 1.5; }
 
     .main { padding: 22px 28px 64px; min-width: 0; container-type: inline-size; }
     .main > .wrap { max-width: 1080px; }
@@ -316,10 +315,10 @@
 <body>
 
   <!-- ===================== Connect ===================== -->
-  <section class="connect hidden" id="connect">
+  <main class="connect hidden" id="connect">
     <div class="connect-card">
       <div class="brand">
-        <img src="https://mosqueaisha.ca/assets/logo-clear.png" alt="" />
+        <img src="./assets/logo.png" alt="" />
         <div>
           <h1>Display Admin</h1>
           <div class="sub">Mosque Aisha prayer screens</div>
@@ -358,13 +357,13 @@
       </form>
       </details>
     </div>
-  </section>
+  </main>
 
   <!-- ===================== App ===================== -->
   <div class="app hidden" id="app">
     <header class="top">
-      <img src="https://mosqueaisha.ca/assets/logo-clear.png" alt="" />
-      <div class="title">Display Admin</div>
+      <img src="./assets/logo.png" alt="" />
+      <h1 class="title">Display Admin</h1>
       <div class="repo" id="repoPill"></div>
       <div class="spacer"></div>
       <div class="save-state" id="saveState">All changes published</div>
@@ -388,14 +387,14 @@
     <aside class="preview" id="preview">
       <div class="ph">
         <b>Preview</b>
-        <select class="in" id="previewLoc" title="Which mosque to preview"></select>
+        <select class="in" id="previewLoc" aria-label="Which mosque to preview"></select>
         <a class="btn sm ghost" id="previewOpen" target="_blank" rel="noopener" title="Open the published screen in a new tab">Open ↗</a>
       </div>
       <div class="frame" id="frame"><div class="frame-box" id="frameBox"><iframe id="previewFrame" title="Screen preview" tabindex="-1"></iframe></div></div>
       <div class="note">Shows your unpublished changes</div>
     </aside>
 
-    <div class="savebar" id="savebar">
+    <div class="savebar" id="savebar" role="region" aria-label="Unpublished changes">
       <span id="saveText">Unpublished changes</span>
       <button class="btn ghost sm" id="discardBtn">Discard</button>
       <button class="btn primary sm" id="publishBtn">Publish to screens</button>

@@ -440,7 +440,7 @@ if (window.top !== window.self) {
       </label>`;
     }
     const dateField = (path, value, label) => `<label class="f">${label}<input class="in" type="date" data-bind="${path}" value="${esc(value || "")}" /></label>`;
-    const toggle = (path, on, label) => `<label class="switch"><input type="checkbox" data-bind="${path}" ${on ? "checked" : ""} /><span class="track"></span>${label}</label>`;
+    const toggle = (path, on, label, name) => `<label class="switch"><input type="checkbox" data-bind="${path}" ${on ? "checked" : ""}${name ? ` aria-label="${esc(name)}"` : ""} /><span class="track"></span>${label}</label>`;
 
     /* ---------- Views ---------- */
     const views = {
@@ -588,7 +588,7 @@ if (window.top !== window.self) {
                 ${t.length ? t.map((m, i) => `
                   <div class="card item">
                     <div class="line">
-                      ${toggle(`ticker.${i}.enabled`, m.enabled !== false, "")}
+                      ${toggle(`ticker.${i}.enabled`, m.enabled !== false, "", "Show this message")}
                       <input class="in" type="text" maxlength="200" data-bind="ticker.${i}.text" value="${esc(m.text)}" placeholder="Halaqa this Friday after Maghrib, everyone welcome" aria-label="Message" />
                       <button class="btn icon sm danger" title="Delete message" aria-label="Delete" data-act="remove" data-list="ticker" data-i="${i}">✕</button>
                     </div>
