@@ -2,8 +2,8 @@
   "version": 1,
   "locationId": 1,
   "slideSeconds": 15,
-  "salahInProgressMin": 10,
-  "reloadToken": 8,
+  "salahInProgressMin": 15,
+  "reloadToken": 9,
   "alert": {
     "enabled": false,
     "title": "",
@@ -12,7 +12,16 @@
     "from": "",
     "to": ""
   },
-  "ticker": [],
+  "ticker": [
+    {
+      "id": "t-mwah2x5ll6su",
+      "text": "Jummah Times Have Changed due to DST",
+      "enabled": true,
+      "locations": 1,
+      "from": "2026-11-10",
+      "to": "2026-11-12"
+    }
+  ],
   "slides": [
     {
       "id": "s-legacy-1",
@@ -21,6 +30,33 @@
       "from": "",
       "to": "",
       "locations": "all",
+      "seconds": null
+    },
+    {
+      "id": "s-mwah9denouq7",
+      "src": "announcements/20261110091815-questions-about-islam.jpg",
+      "enabled": true,
+      "locations": "all",
+      "from": "",
+      "to": "",
+      "seconds": null
+    },
+    {
+      "id": "s-mwah9elbxjm8",
+      "src": "announcements/20261110091817-quran-classes.jpg",
+      "enabled": true,
+      "locations": "all",
+      "from": "",
+      "to": "",
+      "seconds": null
+    },
+    {
+      "id": "s-mwah9flzht5w",
+      "src": "announcements/20261110091818-silence-your-phone.jpg",
+      "enabled": true,
+      "locations": "all",
+      "from": "",
+      "to": "",
       "seconds": null
     }
   ],

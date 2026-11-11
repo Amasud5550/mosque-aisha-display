@@ -10,8 +10,8 @@ on:
     - cron: "*/30 * * * *"   # every 30 minutes
   workflow_dispatch: {}
 
-permissions:
-  contents: write
+# Nothing by default; the one job below gets only what it needs
+permissions: {}
 
 concurrency:
   group: prayer-times
@@ -20,26 +20,42 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write   # to commit prayerTimes.json, nothing else
     env:
       API: https://api.mosqueaisha.ca/mosque-api
+      # Some shared hosts block requests that don't say who they are
+      UA: "Mozilla/5.0 (compatible; MosqueAishaDisplay/1.0; +https://github.com/Amasud5550/mosque-aisha-display)"
     steps:
-      - uses: actions/checkout@v4
+      # Pinned to an exact commit so a hijacked tag can't run code with write access (v4.4.0)
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Fetch times from mosqueaisha.ca
         run: |
           set -euo pipefail
           tmp="$(mktemp -d)"
-          get() { curl -fsS --retry 3 --retry-delay 5 --max-time 20 "$API/$1"; }
+          get() { curl -fsS --proto =https --max-filesize 200000 --retry 3 --retry-delay 5 --max-time 20 -A "$UA" -H "Accept: application/json" "$API/$1"; }
 
           get prayerTimes/locations > "$tmp/locs.json"
           get prayerTimes/date      > "$tmp/date.json" || echo '{}' > "$tmp/date.json"
-          jq -e 'type == "array" and length > 0' "$tmp/locs.json" > /dev/null
+          # Everything from the API is checked before it can reach the screens.
+          # A failed check stops the job and leaves the last good times in place.
+          jq -e 'type == "array" and length > 0 and length <= 20
+                 and all(.[]; (.id | type) == "number" and .id == (.id | floor) and .id > 0 and .id < 1000
+                              and (.name | type) == "string" and (.name | test("^[A-Za-z0-9 ()&,.\u0027-]{1,80}$")))' \
+            "$tmp/locs.json" > /dev/null || { echo "::error::Unexpected locations data from mosqueaisha.ca"; exit 1; }
 
           echo '[]' > "$tmp/all.json"
           for id in $(jq -r '.[].id' "$tmp/locs.json"); do
             get "prayerTimes/regular/$id" > "$tmp/p.json"
-            # Fail loudly rather than overwrite good data with junk
-            jq -e 'type == "array" and length > 0' "$tmp/p.json" > /dev/null
+            jq -e 'def t: type == "string" and test("^[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?$");
+                   type == "array" and length >= 4 and length <= 20
+                   and all(.[]; (.name | type) == "string" and (.name | test("^[A-Za-z0-9 \u0027-]{1,40}$"))
+                                and (.time | t) and ((.start // "00:00") | t)
+                                and ((.is_jummah // false) | type) == "boolean"
+                                and ((.jummah_order // 1) | type) == "number")' \
+              "$tmp/p.json" > /dev/null || { echo "::error::Unexpected prayer data for location $id from mosqueaisha.ca"; exit 1; }
             jq --slurpfile p "$tmp/p.json" --slurpfile l "$tmp/locs.json" --argjson id "$id" \
               '. + [{ id: $id, name: ([$l[0][] | select(.id == $id) | .name][0]), prayers: $p[0] }]' \
               "$tmp/all.json" > "$tmp/next.json"
