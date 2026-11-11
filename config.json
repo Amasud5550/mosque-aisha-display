@@ -69,17 +69,7 @@
       "seconds": null
     }
   ],
-  "overrides": [
-    {
-      "id": "o-mwafvuq8sb2q",
-      "prayer": "jumuah2",
-      "time": "13:40",
-      "locations": 1,
-      "from": "2026-11-10",
-      "to": "",
-      "note": ""
-    }
-  ],
+  "overrides": [],
   "nightDim": {
     "enabled": false,
     "afterIshaMin": 60,
