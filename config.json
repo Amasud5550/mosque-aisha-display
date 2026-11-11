@@ -8,7 +8,7 @@
     "enabled": false,
     "title": "",
     "text": "",
-    "locations": "all",
+    "locations": 1,
     "from": "",
     "to": ""
   },
