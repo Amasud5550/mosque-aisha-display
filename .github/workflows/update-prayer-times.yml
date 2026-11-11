@@ -28,8 +28,8 @@ jobs:
       # Some shared hosts block requests that don't say who they are
       UA: "Mozilla/5.0 (compatible; MosqueAishaDisplay/1.0; +https://github.com/Amasud5550/mosque-aisha-display)"
     steps:
-      # Pinned to an exact commit so a hijacked tag can't run code with write access (v4.4.0)
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      # Pinned to an exact commit so a hijacked tag can't run code with write access (v6.1.0, runs on Node 24)
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
 
       - name: Fetch times from mosqueaisha.ca
         run: |
