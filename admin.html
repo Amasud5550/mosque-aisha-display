@@ -6,8 +6,14 @@
   <meta name="robots" content="noindex, nofollow" />
   <!-- The GitHub token lives on this page, so it is locked down hard:
        only admin.js may run, and it can only talk to GitHub's API. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com https://mosqueaisha.ca data: blob:; connect-src https://api.github.com; frame-src 'self' https://*.github.io; base-uri 'none'; form-action 'none'; object-src 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://raw.githubusercontent.com https://mosqueaisha.ca data: blob:; connect-src https://api.github.com https://login.microsoftonline.com https://mosque-aisha-display-admin.PASTE-WORKERS-SUBDOMAIN.workers.dev; frame-src 'self' https://*.github.io; base-uri 'none'; form-action 'none'; object-src 'none'" />
   <meta name="referrer" content="no-referrer" />
+  <!-- Sign in with Microsoft: fill these in (see worker/SETUP.md). The Worker URL must also be
+       added to connect-src in the Content-Security-Policy line above. Leave as-is to use GitHub tokens only. -->
+  <meta name="ms-sign-in"
+        data-tenant="PASTE-DIRECTORY-TENANT-ID"
+        data-client="PASTE-APPLICATION-CLIENT-ID"
+        data-worker="https://mosque-aisha-display-admin.PASTE-WORKERS-SUBDOMAIN.workers.dev" />
   <title>Display Admin · Mosque Aisha</title>
   <link rel="icon" href="https://mosqueaisha.ca/assets/logo-clear.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -111,6 +117,14 @@
     .steps li { margin: 3px 0; }
     .steps b { color: var(--ink); }
     .err { color: var(--bad); font-weight: 600; font-size: 14px; min-height: 1em; }
+    .ms-block { display: grid; gap: 10px; margin-bottom: 18px; }
+    .ms-btn { display: flex; align-items: center; justify-content: center; gap: 12px; height: 46px; border-radius: 10px; border: 1px solid #8c8c8c; background: #ffffff; color: #1b1b1b; font-weight: 700; font-size: 15px; cursor: pointer; }
+    .ms-btn:hover { background: #f3f3f3; }
+    .ms-btn:focus-visible { outline: 2px solid var(--gold-2); outline-offset: 2px; }
+    .ms-btn svg { width: 20px; height: 20px; }
+    .token-section > summary { cursor: pointer; color: var(--muted); font-size: 13px; font-weight: 600; padding: 6px 0; list-style-position: inside; }
+    .token-section[open] > summary { margin-bottom: 12px; }
+    .ms-block:not(.hidden) + .token-section { border-top: 1px solid var(--line); padding-top: 12px; }
 
     /* ---------- App shell ---------- */
     .app { display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr) var(--prev-w); grid-template-rows: var(--top-h) 1fr; min-height: 100vh; }
@@ -312,6 +326,17 @@
         </div>
       </div>
 
+      <div id="msBlock" class="ms-block hidden">
+        <button class="ms-btn" type="button" id="msBtn">
+          <svg viewBox="0 0 21 21" aria-hidden="true"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>
+          Sign in with Microsoft
+        </button>
+        <div class="hint">For Mosque Aisha accounts in the <b>Display Admins</b> group.</div>
+        <div class="err" id="msErr"></div>
+      </div>
+
+      <details id="tokenSection" class="token-section">
+      <summary>Sign in with a GitHub token instead</summary>
       <ol class="steps">
         <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → New fine-grained token</a>.</li>
         <li>Repository access: <b>Only select repositories</b> → <b id="repoHint">mosque-aisha-display</b>.</li>
@@ -331,6 +356,7 @@
         <button class="btn primary" type="submit" id="connectBtn">Connect</button>
         <div class="hint">The token stays in this browser only. Anyone with write access to the repo can sign in with their own token.</div>
       </form>
+      </details>
     </div>
   </section>
 

@@ -1,0 +1,23 @@
+# Cloudflare Worker that lets volunteers sign in to the display admin with Microsoft.
+# Deploy:  npx wrangler deploy          (from this worker/ folder)
+# Secret:  npx wrangler secret put GITHUB_TOKEN
+#          (fine-grained token: only the mosque-aisha-display repo, Contents + Actions: Read and write)
+
+name = "mosque-aisha-display-admin"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+workers_dev = true
+
+[vars]
+# Microsoft Entra (Mosque Aisha's Microsoft 365): copy these from the app registration's Overview page
+TENANT_ID = "PASTE-DIRECTORY-TENANT-ID"
+CLIENT_ID = "PASTE-APPLICATION-CLIENT-ID"
+# Object ID of the "Display Admins" security group (Entra admin center → Groups → the group → Overview)
+ADMIN_GROUP_ID = "PASTE-GROUP-OBJECT-ID"
+
+# Only the GitHub Pages site may call this Worker
+ALLOWED_ORIGIN = "https://amasud5550.github.io"
+
+# The one repository this Worker may change
+GITHUB_OWNER = "Amasud5550"
+GITHUB_REPO = "mosque-aisha-display"

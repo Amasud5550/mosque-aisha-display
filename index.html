@@ -81,7 +81,7 @@
       left: 90px;
       right: 90px;
       top: 150px;
-      height: 760px;
+      height: 350px;
       border: 2px solid rgba(173, 128, 24, 0.16);
       border-bottom: none;
       border-radius: 450px 450px 0 0;
@@ -161,10 +161,11 @@
     .dates {
       margin-top: 14px;
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 22px;
-      font-size: 32px;
+      gap: 4px 20px;
+      font-size: 30px;
       font-weight: 500;
       color: var(--ink-dim);
     }
@@ -177,6 +178,7 @@
     }
 
     .dates .hijri { color: var(--gold-bright); }
+    .dates > span { white-space: nowrap; }
 
     /* ---------- Next prayer ---------- */
     .next {
@@ -271,6 +273,19 @@
     }
 
     .row:last-child { border-bottom: none; }
+
+    /* Jumu'ah shown every day (except Friday, when it replaces Dhuhr) */
+    .table.dense .row:not(.head) { height: 90px; }
+    .row.weekly .t { color: var(--ink-dim); font-weight: 700; font-size: 40px; }
+    .row.weekly .t .lbl {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
 
     .row.head {
       height: 64px;
@@ -589,6 +604,10 @@
       margin-bottom: 2px;
     }
     body.landscape #rows .row .t.iq::before { content: "Iqamah"; }
+    body.landscape #rows .row.weekly .t::before { content: attr(data-label); }
+    body.landscape #rows .row.weekly .t { font-size: 40px; }
+    body.landscape #rows .row.weekly .t .lbl { display: none; }
+    body.landscape #rows .row.weekly .jt-empty { display: none; }
     body.landscape #rows .row.active::before { left: 24px; right: 24px; top: 0; bottom: auto; width: auto; height: 6px; }
 
     body.landscape .next {

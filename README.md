@@ -7,6 +7,7 @@ Digital prayer-times screen for Mosque Aisha (Stanley Ave and Thorold), hosted o
 | `index.html` + `screen.js` | The screen. Open it full-screen on the TV. Portrait TVs get the tall layout, landscape TVs the wide one. |
 | `sw.js` | Offline cache so screens keep working through internet outages. |
 | `admin.html` + `admin.js` | The admin dashboard. Change slides, notices, time changes and settings here. |
+| `worker/` | Cloudflare Worker for **Sign in with Microsoft** on the admin page. Setup: `worker/SETUP.md`. |
 | `config.json` | Everything the admin page edits. Don't edit by hand unless you have to. |
 | `prayerTimes.json` | Backup copy of the times from mosqueaisha.ca, refreshed every 30 minutes. |
 | `announcements/` | Images uploaded from the admin page. |
@@ -23,6 +24,8 @@ For an extra screen that should always show one mosque, add `?location=1` (Stanl
 Screens check for admin changes every 2 minutes and reload themselves just after midnight.
 
 ## Admin
+
+Volunteers sign in with their **Mosque Aisha Microsoft account** (members of the *Display Admins* group). See `worker/SETUP.md` for the one-time setup. Signing in with a GitHub token still works as a backup:
 
 `https://amasud5550.github.io/mosque-aisha-display/admin.html`
 
@@ -42,6 +45,8 @@ The screen reads the same API as mosqueaisha.ca (`api.mosqueaisha.ca/mosque-api`
 Change times permanently in the mosque website's admin. Use **Time changes** in this admin to override a time on the screens only.
 
 ## Security
+
+- **Microsoft sign-in**: the Worker checks every request's Microsoft token (signature, Mosque Aisha's tenant, this app, the `Display.Manage` permission, Display Admins membership), allows only the admin page's handful of GitHub actions on this one repo, re-validates settings, only accepts real images into `announcements/`, can only delete images, and records changes as `Admin (Name)` (no email, since history is public). Its GitHub token never reaches a browser. Tests: `cd worker && npm test`.
 
 - **Admin access is a GitHub token.** Use a *fine-grained* token for this repo only (Contents + Actions: Read and write) with an expiry date. The admin page warns if you sign in with a classic token, which could change all of your repositories. Turn on two-factor authentication for your GitHub account.
 - The token is stored only in the browser you sign in on. Use **Settings → Sign out on this device** on shared computers.

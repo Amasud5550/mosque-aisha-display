@@ -96,13 +96,91 @@ if (window.top !== window.self) {
       r.readAsDataURL(blob);
     });
 
-    /* ---------- GitHub API ---------- */
+    /* ---------- Sign in with Microsoft (Entra ID, auth code + PKCE, no library) ----------
+       Microsoft proves who you are; the Worker checks you're in Display Admins and makes the
+       change on GitHub with its own token, so no GitHub token is ever in this browser. */
+    const msMeta = document.querySelector('meta[name="ms-sign-in"]');
+    const MS = {
+      tenant: msMeta?.dataset.tenant || "",
+      client: msMeta?.dataset.client || "",
+      worker: (msMeta?.dataset.worker || "").replace(/\/+$/, "")
+    };
+    const MS_READY = [MS.tenant, MS.client, MS.worker].every((v) => v && !v.includes("PASTE-"));
+    const MS_KEY = "mosque-aisha-admin-ms";
+    const msScope = () => `api://${MS.client}/Display.Manage openid profile offline_access`;
+    const msRedirect = () => location.origin + location.pathname;
+    const msAuthority = () => `https://login.microsoftonline.com/${encodeURIComponent(MS.tenant)}/oauth2/v2.0`;
+    const b64url = (bytes) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    const randomStr = (n) => b64url(crypto.getRandomValues(new Uint8Array(n)));
+    const ssGet = (k) => { try { return JSON.parse(sessionStorage.getItem(k) || "null"); } catch { return null; } };
+    const ssSet = (k, v) => { try { v === null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+    async function msSignIn() {
+      const verifier = randomStr(48);
+      const state = randomStr(16);
+      const challenge = b64url(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier))));
+      ssSet(`${MS_KEY}:pkce`, { verifier, state });
+      const q = new URLSearchParams({
+        client_id: MS.client, response_type: "code", redirect_uri: msRedirect(), response_mode: "query",
+        scope: msScope(), state, code_challenge: challenge, code_challenge_method: "S256", prompt: "select_account"
+      });
+      location.assign(`${msAuthority()}/authorize?${q}`);
+    }
+
+    async function msToken(params) {
+      const res = await fetch(`${msAuthority()}/token`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ client_id: MS.client, scope: msScope(), ...params })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.access_token) throw new Error((data.error_description || "Microsoft sign-in failed.").split(/\r?\n/)[0]);
+      const session = { access: data.access_token, exp: Date.now() + (data.expires_in || 3600) * 1000, refresh: data.refresh_token || null };
+      ssSet(MS_KEY, session);
+      return session;
+    }
+
+    // Back from Microsoft with ?code=…: swap it for a token, then clean the address bar
+    async function msHandleRedirect() {
+      const q = new URLSearchParams(location.search);
+      if (!q.has("code") && !q.has("error")) return false;
+      history.replaceState(null, "", msRedirect());
+      if (q.has("error")) throw new Error((q.get("error_description") || q.get("error")).split(/\r?\n/)[0]);
+      const pkce = ssGet(`${MS_KEY}:pkce`);
+      ssSet(`${MS_KEY}:pkce`, null);
+      if (!pkce || pkce.state !== q.get("state")) throw new Error("That sign-in didn't match this page. Please try again.");
+      await msToken({ grant_type: "authorization_code", code: q.get("code"), redirect_uri: msRedirect(), code_verifier: pkce.verifier });
+      return true;
+    }
+
+    async function msAccessToken() {
+      let s = ssGet(MS_KEY);
+      if (!s) throw Object.assign(new Error("Please sign in again."), { status: 401 });
+      if (Date.now() > s.exp - 2 * 60 * 1000) {
+        if (!s.refresh) throw Object.assign(new Error("Your sign-in expired. Please sign in again."), { status: 401 });
+        s = await msToken({ grant_type: "refresh_token", refresh_token: s.refresh });
+      }
+      return s.access;
+    }
+
+    async function connectMicrosoft() {
+      S.mode = "microsoft";
+      const res = await fetch(`${MS.worker}/me`, { cache: "no-store", headers: { Authorization: `Bearer ${await msAccessToken()}` } });
+      const me = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(me.message || `The admin service answered ${res.status}.`);
+      [S.owner, S.repo] = guessRepo().split("/");
+      const info = await gh(repoPath());
+      Object.assign(S, { user: me.name, owner: info.owner.login, repo: info.name, branch: info.default_branch || "main", tokenWarning: "" });
+    }
+
+    /* ---------- GitHub API (directly with a token, or through the Worker after Microsoft sign-in) ---------- */
     async function gh(path, { method = "GET", body, raw = false } = {}) {
-      const res = await fetch(`https://api.github.com${path}`, {
+      const viaWorker = S.mode === "microsoft";
+      const res = await fetch(`${viaWorker ? `${MS.worker}/github` : "https://api.github.com"}${path}`, {
         method,
         cache: "no-store",
         headers: {
-          Authorization: `Bearer ${S.token}`,
+          Authorization: `Bearer ${viaWorker ? await msAccessToken() : S.token}`,
           Accept: raw ? "application/vnd.github.raw+json" : "application/vnd.github+json",
           "X-GitHub-Api-Version": "2022-11-28",
           ...(body ? { "Content-Type": "application/json" } : {})
@@ -134,7 +212,7 @@ if (window.top !== window.self) {
       try { (remember ? localStorage : sessionStorage).setItem(CRED_KEY, JSON.stringify(c)); } catch {}
     }
     function signOut() {
-      try { localStorage.removeItem(CRED_KEY); sessionStorage.removeItem(CRED_KEY); } catch {}
+      try { localStorage.removeItem(CRED_KEY); sessionStorage.removeItem(CRED_KEY); sessionStorage.removeItem(MS_KEY); } catch {}
       location.reload();
     }
 
@@ -152,7 +230,7 @@ if (window.top !== window.self) {
     async function connect(token, repoFull) {
       const [owner, repo] = repoFull.trim().replace(/^https?:\/\/github\.com\//, "").replace(/\.git$/, "").split("/");
       if (!owner || !repo) throw new Error("Repository should look like owner/repo");
-      Object.assign(S, { token: token.trim(), owner, repo });
+      Object.assign(S, { mode: "github", token: token.trim(), owner, repo });
       let info;
       try { info = await gh(repoPath()); }
       catch (e) {
@@ -659,7 +737,7 @@ if (window.top !== window.self) {
           <div class="section">
             <div class="section-head"><h3>Account</h3></div>
             <div class="card kv">
-              <span>Saving to <b>${esc(S.owner)}/${esc(S.repo)}</b> on <b>${esc(S.branch)}</b></span>
+              <span>${S.mode === "microsoft" ? `Signed in with Microsoft as <b>${esc(S.user)}</b>. Changes are saved to <b>${esc(S.owner)}/${esc(S.repo)}</b> in your name.` : `Saving to <b>${esc(S.owner)}/${esc(S.repo)}</b> on <b>${esc(S.branch)}</b> with a GitHub token`}</span>
               <span class="spacer" style="flex:1"></span>
               <button class="btn danger" data-act="signout">Sign out on this device</button>
             </div>
@@ -849,7 +927,7 @@ if (window.top !== window.self) {
         toast("Refreshing from mosqueaisha.ca. This takes about a minute.");
       } catch (e) {
         const msg = e.status === 404 ? `The refresh workflow isn't in the repo yet (.github/workflows/${WORKFLOW}).`
-                  : e.status === 403 ? "Your token needs Actions → Read and write to do this."
+                  : e.status === 403 ? (S.mode === "microsoft" ? "The admin service's GitHub token needs Actions → Read and write." : "Your token needs Actions → Read and write to do this.")
                   : e.message;
         toast(msg, "bad", 7000);
         render();
@@ -1053,7 +1131,7 @@ if (window.top !== window.self) {
     async function start() {
       $("connect").classList.add("hidden");
       $("app").classList.remove("hidden");
-      $("repoPill").textContent = `${S.owner}/${S.repo}`;
+      $("repoPill").textContent = S.mode === "microsoft" ? `Signed in as ${S.user}` : `${S.owner}/${S.repo}`;
       $("view").innerHTML = `<div class="empty">Loading…</div>`;
       try {
         await loadAll();
@@ -1086,10 +1164,30 @@ if (window.top !== window.self) {
       }
     });
 
+    if (MS_READY) $("msBtn").addEventListener("click", () => { $("msErr").textContent = ""; msSignIn(); });
+
     (async function boot() {
       const guess = guessRepo();
       $("repoIn").value = guess;
       $("repoHint").textContent = guess.split("/")[1];
+      if (MS_READY) $("msBlock").classList.remove("hidden");
+      else $("tokenSection").open = true;
+
+      // Microsoft sign-in (returning from Microsoft, or already signed in this session)
+      if (MS_READY) {
+        try {
+          if ((await msHandleRedirect()) || ssGet(MS_KEY)) {
+            await connectMicrosoft();
+            await start();
+            return;
+          }
+        } catch (e) {
+          ssSet(MS_KEY, null);
+          S.mode = "github";
+          $("msErr").textContent = e.message;
+        }
+      }
+
       const creds = readCreds();
       if (creds?.token) {
         try {

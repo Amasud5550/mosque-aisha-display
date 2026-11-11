@@ -371,6 +371,15 @@
         .sort((a, b) => (a.iqamah ?? a.start) - (b.iqamah ?? b.start));
     }
 
+    function jumuahTimes(now) {
+      if (!state.data) return [];
+      const overrides = (state.config.overrides || []).filter((o) => isLive(o, now.day) && toSecs(o.time) != null);
+      return state.data.prayers
+        .filter((p) => p.jumuah)
+        .map((p) => { const o = overrides.find((x) => x.prayer === p.id); return o ? { ...p, iqamah: toSecs(o.time) } : p; })
+        .sort((a, b) => (a.iqamah ?? a.start) - (b.iqamah ?? b.start));
+    }
+
     function currentPhase(list, now) {
       const t = now.secs;
       const windowSecs = (+state.config.salahInProgressMin || 0) * 60;
@@ -395,13 +404,30 @@
     }
 
     /* ---------- Rendering ---------- */
-    function renderRows(list) {
-      $("rows").innerHTML = list.map((p) => `
+    function renderRows(list, jum = [], friday = false) {
+      const rows = list.map((p) => `
         <div class="row" data-id="${esc(p.id)}">
           <div class="pname"><span class="en">${esc(p.label)}</span><span class="ar">${esc(p.arabic)}</span></div>
           <div class="col-time t">${p.start != null ? timeHTML(p.start) : "—"}</div>
           <div class="col-time t iq">${timeHTML(p.iqamah ?? p.start)}</div>
-        </div>`).join("");
+        </div>`);
+
+      if (!friday && jum.length) {
+        const cells = jum.length === 1
+          ? `<div class="col-time t jt jt-empty"><span class="lbl">Fridays</span></div>
+             <div class="col-time t iq jt" data-label="Fridays">${timeHTML(jum[0].iqamah ?? jum[0].start)}</div>`
+          : jum.slice(0, 2).map((p, k) => `<div class="col-time t${k ? " iq" : ""} jt" data-label="${k ? "2nd" : "1st"}"><span class="lbl">${k ? "2nd" : "1st"}</span>${timeHTML(p.iqamah ?? p.start)}</div>`).join("");
+        const row = `
+        <div class="row weekly" data-id="jumuah-weekly">
+          <div class="pname"><span class="en">Jumu'ah</span><span class="ar">${esc(ARABIC.jumuah)}</span></div>
+          ${cells}
+        </div>`;
+        // slot it in by time (normally right after Dhuhr)
+        const at = list.findIndex((p) => (p.iqamah ?? p.start) > (jum[0].iqamah ?? jum[0].start));
+        rows.splice(at === -1 ? rows.length : at, 0, row);
+      }
+      $("rows").innerHTML = rows.join("");
+      $("table").classList.toggle("dense", rows.length >= 6);
     }
 
     function renderHeaderData() {
@@ -475,7 +501,7 @@
         $("count").textContent = fmtCountdown(info.target - now.secs);
       }
 
-      const rows = [...document.querySelectorAll("#rows .row")];
+      const rows = [...document.querySelectorAll("#rows .row:not(.weekly)")];
       const idx = rows.findIndex((r) => r.dataset.id === p.id);
       rows.forEach((r, k) => {
         if (k === idx) r.classList.add("active");
@@ -601,7 +627,7 @@
       const list = safely(todaysPrayers, now) || [];
       const sig = `${now.day}|${now.weekday}|${state.loadedAt?.getTime() || 0}|${state.source}|${state.configStamp}`;
       if (sig !== state.renderedFor) {
-        safely(renderRows, list);
+        safely(renderRows, list, safely(jumuahTimes, now) || [], now.weekday.toLowerCase().startsWith("fri"));
         safely(renderHeaderData);
         state.renderedFor = sig;
       }
