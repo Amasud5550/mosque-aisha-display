@@ -115,7 +115,14 @@ if (window.top !== window.self) {
     const ssGet = (k) => { try { return JSON.parse(sessionStorage.getItem(k) || "null"); } catch { return null; } };
     const ssSet = (k, v) => { try { v === null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, JSON.stringify(v)); } catch {} };
 
+    // Microsoft only returns to the registered https address, so a copy opened from a file
+    // (file:///…) or anywhere else can't sign in. Say so plainly instead of showing Microsoft's error.
+    const MS_HOME = "https://amasud5550.github.io/mosque-aisha-display/admin.html";
     async function msSignIn() {
+      if (location.protocol !== "https:" || msRedirect() !== MS_HOME) {
+        $("msErr").innerHTML = `Microsoft sign-in only works from the website. <a href="${MS_HOME}">Open the admin page here</a>.`;
+        return;
+      }
       const verifier = randomStr(48);
       const state = randomStr(16);
       const challenge = b64url(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier))));
@@ -1146,7 +1153,28 @@ if (window.top !== window.self) {
       updateSaveBar();
       loadPreview();
       if (S.tokenWarning) toast(S.tokenWarning, "bad", 12000);
+      startStatusRefresh();
       fitPreview();
+    }
+
+    /* ---------- Keep the prayer-times status current while the page stays open ----------
+       Re-checks the job's last run and the saved times every 5 minutes and whenever the tab
+       comes back into view. Only the status panels re-draw, and never while you're typing. */
+    let statusTimer = null, lastStatusCheck = 0;
+    async function refreshStatus() {
+      if (S.busy || !S.draft) return;
+      lastStatusCheck = Date.now();
+      await Promise.allSettled([loadRun(), loadPrayers()]);
+      const typing = document.activeElement && $("view").contains(document.activeElement) && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+      if (!typing && (S.tab === "overview" || S.tab === "prayers")) render();
+    }
+    function startStatusRefresh() {
+      if (statusTimer) return;
+      statusTimer = setInterval(refreshStatus, 5 * 60 * 1000);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible" && Date.now() - lastStatusCheck > 60 * 1000) refreshStatus();
+      });
+      lastStatusCheck = Date.now();
     }
 
     $("connectForm").addEventListener("submit", async (e) => {
