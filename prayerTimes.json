@@ -11,7 +11,7 @@
       "prayers": [
         {
           "name": "Fajr",
-          "time": "06:00:00",
+          "time": "06:15:00",
           "is_jummah": false,
           "jummah_order": null,
           "start": "05:42"
@@ -109,12 +109,12 @@
       ]
     }
   ],
-  "fajr": "06:00:00",
+  "fajr": "06:15:00",
   "dhuhr": "12:30:00",
   "asr": "15:00:00",
   "maghrib": "16:58",
   "isha": "18:45:00",
   "jumah1": "12:40:00",
   "jumah2": "13:40:00",
-  "updatedAt": "2026-11-10T09:04:27Z"
+  "updatedAt": "2026-11-11T04:47:04Z"
 }

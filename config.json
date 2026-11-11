@@ -3,7 +3,7 @@
   "locationId": 1,
   "slideSeconds": 15,
   "salahInProgressMin": 15,
-  "reloadToken": 9,
+  "reloadToken": 10,
   "alert": {
     "enabled": false,
     "title": "",
@@ -27,9 +27,9 @@
       "id": "s-legacy-1",
       "src": "WhatsApp Image 2025-04-20 at 20.45.41.jpeg",
       "enabled": true,
+      "locations": "all",
       "from": "",
       "to": "",
-      "locations": "all",
       "seconds": null
     },
     {
