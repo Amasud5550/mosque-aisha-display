@@ -42,7 +42,7 @@
           "time": "15:00:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "14:35"
+          "start": "14:36"
         },
         {
           "name": "Maghrib",
@@ -90,7 +90,7 @@
           "time": "15:30:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "14:35"
+          "start": "14:36"
         },
         {
           "name": "Maghrib",
@@ -116,5 +116,5 @@
   "isha": "18:45:00",
   "jumah1": "12:40:00",
   "jumah2": "13:40:00",
-  "updatedAt": "2026-11-12T16:43:56Z"
+  "updatedAt": "2026-11-13T03:21:17Z"
 }
