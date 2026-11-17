@@ -1,8 +1,8 @@
 {
-  "day": "2026-11-16",
+  "day": "2026-11-17",
   "date": {
-    "hijri": "6 Jumādá al-ākhirah, 1448",
-    "gregorian": "16 November, 2026"
+    "hijri": "7 Jumādá al-ākhirah, 1448",
+    "gregorian": "17 November, 2026"
   },
   "locations": [
     {
@@ -14,7 +14,7 @@
           "time": "06:15:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "05:49"
+          "start": "05:50"
         },
         {
           "name": "Dhuhr",
@@ -42,7 +42,7 @@
           "time": "15:00:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "14:33"
+          "start": "14:32"
         },
         {
           "name": "Maghrib",
@@ -69,7 +69,7 @@
           "time": "06:15:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "05:49"
+          "start": "05:50"
         },
         {
           "name": "Jummah 1",
@@ -90,7 +90,7 @@
           "time": "15:30:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "14:33"
+          "start": "14:32"
         },
         {
           "name": "Maghrib",
@@ -116,5 +116,5 @@
   "isha": "18:45:00",
   "jumah1": "12:40:00",
   "jumah2": "13:40:00",
-  "updatedAt": "2026-11-16T10:55:39Z"
+  "updatedAt": "2026-11-17T13:02:20Z"
 }
