@@ -1,8 +1,8 @@
 {
-  "day": "2026-11-17",
+  "day": "2026-11-18",
   "date": {
-    "hijri": "7 Jumādá al-ākhirah, 1448",
-    "gregorian": "17 November, 2026"
+    "hijri": "8 Jumādá al-ākhirah, 1448",
+    "gregorian": "18 November, 2026"
   },
   "locations": [
     {
@@ -14,7 +14,7 @@
           "time": "06:15:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "05:50"
+          "start": "05:51"
         },
         {
           "name": "Dhuhr",
@@ -42,21 +42,21 @@
           "time": "15:00:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "14:32"
+          "start": "14:31"
         },
         {
           "name": "Maghrib",
-          "time": "16:52",
+          "time": "16:51",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "16:52"
+          "start": "16:51"
         },
         {
           "name": "Isha",
           "time": "18:45:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "18:14"
+          "start": "18:13"
         }
       ]
     },
@@ -69,7 +69,7 @@
           "time": "06:15:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "05:50"
+          "start": "05:51"
         },
         {
           "name": "Jummah 1",
@@ -90,21 +90,21 @@
           "time": "15:30:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "14:32"
+          "start": "14:31"
         },
         {
           "name": "Maghrib",
-          "time": "16:52",
+          "time": "16:51",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "16:52"
+          "start": "16:51"
         },
         {
           "name": "Isha",
           "time": "20:00:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "18:14"
+          "start": "18:13"
         }
       ]
     }
@@ -112,9 +112,9 @@
   "fajr": "06:15:00",
   "dhuhr": "12:30:00",
   "asr": "15:00:00",
-  "maghrib": "16:52",
+  "maghrib": "16:51",
   "isha": "18:45:00",
   "jumah1": "12:40:00",
   "jumah2": "13:40:00",
-  "updatedAt": "2026-11-17T13:02:20Z"
+  "updatedAt": "2026-11-18T12:54:21Z"
 }
