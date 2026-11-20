@@ -1,8 +1,8 @@
 {
-  "day": "2026-11-19",
+  "day": "2026-11-20",
   "date": {
-    "hijri": "9 Jumādá al-ākhirah, 1448",
-    "gregorian": "19 November, 2026"
+    "hijri": "10 Jumādá al-ākhirah, 1448",
+    "gregorian": "20 November, 2026"
   },
   "locations": [
     {
@@ -14,14 +14,7 @@
           "time": "06:15:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "05:52"
-        },
-        {
-          "name": "Dhuhr",
-          "time": "12:30:00",
-          "is_jummah": false,
-          "jummah_order": null,
-          "start": "12:03"
+          "start": "05:53"
         },
         {
           "name": "Jummah 1",
@@ -46,10 +39,10 @@
         },
         {
           "name": "Maghrib",
-          "time": "16:50",
+          "time": "16:49",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "16:50"
+          "start": "16:49"
         },
         {
           "name": "Isha",
@@ -69,20 +62,13 @@
           "time": "06:15:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "05:52"
+          "start": "05:53"
         },
         {
           "name": "Jummah 1",
           "time": "13:30:00",
           "is_jummah": true,
           "jummah_order": 1,
-          "start": "12:03"
-        },
-        {
-          "name": "Dhuhr",
-          "time": "13:45:00",
-          "is_jummah": false,
-          "jummah_order": null,
           "start": "12:03"
         },
         {
@@ -94,10 +80,10 @@
         },
         {
           "name": "Maghrib",
-          "time": "16:50",
+          "time": "16:49",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "16:50"
+          "start": "16:49"
         },
         {
           "name": "Isha",
@@ -110,11 +96,11 @@
     }
   ],
   "fajr": "06:15:00",
-  "dhuhr": "12:30:00",
+  "dhuhr": null,
   "asr": "15:00:00",
-  "maghrib": "16:50",
+  "maghrib": "16:49",
   "isha": "18:45:00",
   "jumah1": "12:40:00",
   "jumah2": "13:40:00",
-  "updatedAt": "2026-11-19T19:36:12Z"
+  "updatedAt": "2026-11-20T09:54:48Z"
 }
