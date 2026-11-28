@@ -1,8 +1,8 @@
 {
-  "day": "2026-11-26",
+  "day": "2026-11-27",
   "date": {
-    "hijri": "16 Jumādá al-ākhirah, 1448",
-    "gregorian": "26 November, 2026"
+    "hijri": "17 Jumādá al-ākhirah, 1448",
+    "gregorian": "27 November, 2026"
   },
   "locations": [
     {
@@ -11,17 +11,10 @@
       "prayers": [
         {
           "name": "Fajr",
-          "time": "06:15:00",
+          "time": "06:30:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "06:00"
-        },
-        {
-          "name": "Dhuhr",
-          "time": "12:30:00",
-          "is_jummah": false,
-          "jummah_order": null,
-          "start": "12:05"
+          "start": "06:01"
         },
         {
           "name": "Jummah 1",
@@ -53,7 +46,7 @@
         },
         {
           "name": "Isha",
-          "time": "18:45:00",
+          "time": "18:30:00",
           "is_jummah": false,
           "jummah_order": null,
           "start": "18:09"
@@ -69,20 +62,13 @@
           "time": "06:30:00",
           "is_jummah": false,
           "jummah_order": null,
-          "start": "06:00"
+          "start": "06:01"
         },
         {
           "name": "Jummah 1",
           "time": "13:30:00",
           "is_jummah": true,
           "jummah_order": 1,
-          "start": "12:05"
-        },
-        {
-          "name": "Dhuhr",
-          "time": "13:45:00",
-          "is_jummah": false,
-          "jummah_order": null,
           "start": "12:05"
         },
         {
@@ -109,12 +95,12 @@
       ]
     }
   ],
-  "fajr": "06:15:00",
-  "dhuhr": "12:30:00",
+  "fajr": "06:30:00",
+  "dhuhr": null,
   "asr": "15:00:00",
   "maghrib": "16:45",
-  "isha": "18:45:00",
+  "isha": "18:30:00",
   "jumah1": "12:40:00",
   "jumah2": "13:40:00",
-  "updatedAt": "2026-11-26T12:10:48Z"
+  "updatedAt": "2026-11-28T04:40:01Z"
 }
